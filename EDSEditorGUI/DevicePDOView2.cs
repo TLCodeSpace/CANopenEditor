@@ -18,17 +18,15 @@ namespace ODEditor
 
         libEDSsharp.PDOHelper helper;
         bool isTXPDO;
-
-        StringCollection TXchoices = new StringCollection();
+        readonly StringCollection TXchoices = new();
         string[] srray;
 
         PDOSlot selectedslot = null;
+        readonly CellBackColorAlternate viewNormal = new(Color.Khaki, Color.DarkKhaki);
+        readonly CellBackColorAlternate viewEmpty = new(Color.Gray, Color.Gray);
+        readonly CellBackColorAlternate viewCOB = new(Color.LightBlue, Color.Blue);
 
-        CellBackColorAlternate viewNormal = new CellBackColorAlternate(Color.Khaki, Color.DarkKhaki);
-        CellBackColorAlternate viewEmpty = new CellBackColorAlternate(Color.Gray, Color.Gray);
-        CellBackColorAlternate viewCOB = new CellBackColorAlternate(Color.LightBlue, Color.Blue);
-
-        Point RightClickPoint = new Point(0, 0);
+        Point RightClickPoint = new(0, 0);
 
         public DevicePDOView2()
         {
@@ -59,15 +57,17 @@ namespace ODEditor
 
             for (int x = 0; x < 8; x++)
             {
-                grid1[1, 3 + x * 8] = new MyHeader(string.Format("Byte {0}", x));
-                grid1[1, 3 + x * 8].ColumnSpan = 8;
+                grid1[1, 3 + x * 8] = new MyHeader(string.Format("Byte {0}", x))
+                {
+                    ColumnSpan = 8
+                };
 
                 grid1[1, 3 + x * 8].View.BackColor = Color.Red;
 
             }
 
             grid1.Rows[0].Height = 30;
-            
+
             contextMenuStrip_removeitem.ItemClicked += ContextMenuStrip_removeitem_ItemClicked;
 
             Invalidated += DevicePDOView2_Invalidated;
@@ -82,8 +82,7 @@ namespace ODEditor
         private void ContextMenuStrip_removeitem_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
 
-            int foundrow, foundcol;
-            SourceGrid.Cells.ICellVirtual v = getItemAtGridPoint(RightClickPoint, out foundrow, out foundcol);
+            SourceGrid.Cells.ICellVirtual v = GetItemAtGridPoint(RightClickPoint, out int foundrow, out int foundcol);
             SourceGrid.Cells.Cell c = (SourceGrid.Cells.Cell)v;
 
             if (c == null)
@@ -103,13 +102,13 @@ namespace ODEditor
                     break;
 
                 case "insert":
-                    ODentry od = new ODentry();
+                    ODentry od = new();
                     location.slot.Mapping.Insert(location.ordinal, eds.dummy_ods[0x002]);
                     break;
 
             }
 
-            helper.buildmappingsfromlists();
+            helper.Buildmappingsfromlists();
             UpdatePDOinfo();
 
 
@@ -133,9 +132,8 @@ namespace ODEditor
             PDOlocator location = (PDOlocator)((SourceGrid.Cells.Cell)cell.Cell).Tag;
             PDOSlot slot = location.slot;
 
-            ODentry newentry = null;
 
-            if (eds.tryGetODEntry(newindex, out newentry))
+            if (eds.tryGetODEntry(newindex, out ODentry newentry))
             {
                 if (newsubindex != 0)
                     newentry = newentry.subobjects[newsubindex];
@@ -154,20 +152,19 @@ namespace ODEditor
                 slot.Mapping[location.ordinal] = newentry;
             }
 
-            helper.buildmappingsfromlists();
+            helper.Buildmappingsfromlists();
 
             doUpdateOD();
             UpdatePDOinfo();
         }
 
-        SourceGrid.Cells.ICellVirtual getItemAtGridPoint(Point P, out int foundrow, out int foundcol)
+        SourceGrid.Cells.ICellVirtual GetItemAtGridPoint(Point P, out int foundrow, out int foundcol)
         {
             int y = 0;
-            int y2 = 0;
             foundrow = 0;
-            foreach (GridRow row in grid1.Rows)
+            foreach (GridRow row in grid1.Rows.Cast<GridRow>())
             {
-                y2 = y + row.Height;
+                int y2 = y + row.Height;
 
                 if (P.Y > y && P.Y < y2)
                 {
@@ -176,7 +173,6 @@ namespace ODEditor
                 y = y2;
             }
 
-            int x2 = 0;
             foundcol = 0;
             int outofview = 0;
             for (int i = 0; i < grid1.HScrollBar.Value; i++)
@@ -184,7 +180,7 @@ namespace ODEditor
                 outofview += grid1.Columns.GetWidth(i);
             }
 
-            x2 = -outofview;
+            int x2 = -outofview;
             foreach (GridColumn col in grid1.Columns)
             {
 
@@ -197,8 +193,8 @@ namespace ODEditor
             }
 
             Console.WriteLine(string.Format("Found grid at {0}x{1}", foundcol, foundrow));
-            
-            SourceGrid.Cells.ICellVirtual v =  grid1.GetCell(foundrow, foundcol);
+
+            SourceGrid.Cells.ICellVirtual v = grid1.GetCell(foundrow, foundcol);
 
             return v;
 
@@ -209,8 +205,7 @@ namespace ODEditor
 
             MouseEventArgs ma = (MouseEventArgs)e;
 
-            int foundrow, foundcol;
-            SourceGrid.Cells.ICellVirtual v = getItemAtGridPoint(ma.Location, out foundrow, out foundcol);
+            SourceGrid.Cells.ICellVirtual v = GetItemAtGridPoint(ma.Location, out int foundrow, out int foundcol);
 
 
             //// DEBUG code: Create ToolTip with col, row and hscroll.value
@@ -237,13 +232,13 @@ namespace ODEditor
             else if (foundrow > 1) //don't select headers or bits
             {
                 var obj = grid1.Rows[foundrow];
-                if (obj!= null && obj.Tag != null)
+                if (obj != null && obj.Tag != null)
                 {
 
                     PDOSlot slot = (PDOSlot)obj.Tag;
                     selectedslot = slot;
 
-                    updateslotdisplay();
+                    Updateslotdisplay();
 
                     if (isTXPDO)
                     {
@@ -258,7 +253,7 @@ namespace ODEditor
                     button_savepdochanges.Enabled = true;
 
                     //Is invalid bit set
-                    checkBox_invalidpdo.Checked = slot.invalid;
+                    checkBox_invalidpdo.Checked = slot.Invalid;
 
 
 
@@ -283,7 +278,7 @@ namespace ODEditor
         public libEDSsharp.EDSsharp eds;
 
 
-        public void addPDOchoices()
+        public void AddPDOchoices()
         {
 
             listView_TXPDO.BeginUpdate();
@@ -326,7 +321,7 @@ namespace ODEditor
 
             TXchoices.Add(String.Format("0x{0:x4}/{1:x2}/", od.Index, od.Subindex) + od.parameter_name);
 
-            ListViewItem lvi = new ListViewItem(String.Format("0x{0:x4}", od.Index));
+            ListViewItem lvi = new(String.Format("0x{0:x4}", od.Index));
             lvi.SubItems.Add(String.Format("0x{0:x2}", od.Subindex));
             lvi.SubItems.Add(od.parameter_name);
 
@@ -343,7 +338,7 @@ namespace ODEditor
 
         }
 
-        public void updateslotdisplay()
+        public void Updateslotdisplay()
         {
             if (selectedslot == null)
                 return;
@@ -368,13 +363,13 @@ namespace ODEditor
 
             button_savepdochanges.Enabled = (textBox_slot.Text != "");
 
-            updateslotdisplay();
+            Updateslotdisplay();
 
             if (eds == null)
                 return;
 
             if (updatechoices)
-                addPDOchoices();
+                AddPDOchoices();
 
             if (grid1.RowsCount > 2)
                 grid1.Rows.RemoveRange(2, grid1.RowsCount - 2);
@@ -421,15 +416,15 @@ namespace ODEditor
             }
 
 
-            SourceGrid.Cells.Editors.ComboBox comboStandard = new SourceGrid.Cells.Editors.ComboBox(typeof(string), srray, false);
-            comboStandard.Control.DropDownWidth = 0x100;
+            SourceGrid.Cells.Editors.ComboBox comboStandard = new(typeof(string), srray, false);
+            //not in .net6:  comboStandard.Control.DropDownWidth = 0x100;
             comboStandard.Changed += ComboStandard_Changed;
 
             //tableLayoutPanel1.SuspendLayout();
 
-            redrawtable();
+            Redrawtable();
             helper = new libEDSsharp.PDOHelper(eds);
-            helper.build_PDOlists();
+            helper.Build_PDOlists();
 
             srray = new string[TXchoices.Count];
             TXchoices.CopyTo(srray, 0);
@@ -438,7 +433,7 @@ namespace ODEditor
             int row = 0;
             foreach (PDOSlot slot in helper.pdoslots)
             {
-                if (isTXPDO != slot.isTXPDO())
+                if (isTXPDO != slot.IsTXPDO())
                     continue;
 
                 grid1.Redim(grid1.RowsCount + 1, grid1.ColumnsCount);
@@ -458,20 +453,24 @@ namespace ODEditor
                 foreach (ODentry entry in slot.Mapping)
                 {
                     {
-                        string target = slot.getTargetName(entry);
-                        grid1[row + 2, bitoff + 3] = new SourceGrid.Cells.Cell(target, comboStandard);
-                        grid1[row + 2, bitoff + 3].ColumnSpan = entry.Sizeofdatatype();
-                        grid1[row + 2, bitoff + 3].View = viewNormal;
+                        string target = slot.GetTargetName(entry);
+                        grid1[row + 2, bitoff + 3] = new SourceGrid.Cells.Cell(target, comboStandard)
+                        {
+                            ColumnSpan = entry.Sizeofdatatype(),
+                            View = viewNormal
+                        };
 
-                        PDOlocator location = new PDOlocator();
-                        location.slot = slot;
-                        location.ordinal = ordinal;
-                        location.entry = entry;
+                        PDOlocator location = new()
+                        {
+                            slot = slot,
+                            ordinal = ordinal,
+                            entry = entry
+                        };
 
                         Console.WriteLine(string.Format("New location at Row {0} Col {1} Loc {2}", row, bitoff, location.ToString()));
                         grid1[row + 2, bitoff + 3].Tag = location;
 
-                        ValueChangedController vcc = new ValueChangedController();
+                        ValueChangedController vcc = new();
                         vcc.ValueChangedEvent += Vcc_ValueChangedEvent;
 
 
@@ -491,14 +490,16 @@ namespace ODEditor
                         colspan = 8;
                     grid1[row + 2, bitoff + 3].ColumnSpan = colspan;
                     grid1[row + 2, bitoff + 3].View = viewEmpty;
-                    ValueChangedController vcc = new ValueChangedController();
+                    ValueChangedController vcc = new();
                     vcc.ValueChangedEvent += Vcc_ValueChangedEvent;
                     grid1[row + 2, bitoff + 3].AddController(vcc);
 
-                    PDOlocator location = new PDOlocator();
-                    location.slot = slot;
-                    location.ordinal = ordinal;
-                    location.entry = null;
+                    PDOlocator location = new()
+                    {
+                        slot = slot,
+                        ordinal = ordinal,
+                        entry = null
+                    };
 
                     Console.WriteLine(string.Format("New location at Row {0} Col {1} Loc {2}", row, bitoff, location.ToString()));
                     grid1[row + 2, bitoff + 3].Tag = location;
@@ -518,7 +519,7 @@ namespace ODEditor
 
         }
 
-        public void redrawtable()
+        public void Redrawtable()
         {
 
         }
@@ -528,11 +529,13 @@ namespace ODEditor
             public MyHeader(object value) : base(value)
             {
                 //1 Header Row
-                SourceGrid.Cells.Views.ColumnHeader view = new SourceGrid.Cells.Views.ColumnHeader();
-                view.Font = new Font(FontFamily.GenericSansSerif, 8, FontStyle.Bold);
-                view.WordWrap = true;
-                view.TextAlignment = DevAge.Drawing.ContentAlignment.MiddleCenter;
-                view.BackColor = Color.Red;
+                SourceGrid.Cells.Views.ColumnHeader view = new()
+                {
+                    Font = new Font(FontFamily.GenericSansSerif, 8, FontStyle.Bold),
+                    WordWrap = true,
+                    TextAlignment = DevAge.Drawing.ContentAlignment.MiddleCenter,
+                    BackColor = Color.Red
+                };
 
                 string text = value.ToString();
                 if (text == "0" || text == "8" || text == "16" || text == "24" || text == "32" || text == "40" || text == "48" || text == "56")
@@ -562,13 +565,13 @@ namespace ODEditor
 
         }
 
-        private void clickEvent_Click(object sender, EventArgs e)
+        private void ClickEvent_Click(object sender, EventArgs e)
         {
             SourceGrid.CellContext context = (SourceGrid.CellContext)sender;
             MessageBox.Show(this, context.Position.ToString());
         }
 
-        private void button_down_Click(object sender, EventArgs e)
+        private void Button_down_Click(object sender, EventArgs e)
         {
             int newwidth = grid1.Columns[3].Width - 10;
             if (newwidth < 18)
@@ -583,7 +586,7 @@ namespace ODEditor
 
         }
 
-        private void button_up_Click(object sender, EventArgs e)
+        private void Button_up_Click(object sender, EventArgs e)
         {
             int newwidth = grid1.Columns[3].Width + 10;
             Console.WriteLine("New Width " + newwidth.ToString());
@@ -629,11 +632,11 @@ namespace ODEditor
             }
         }
 
-        private void listView_TXPDO_ItemDrag(object sender, ItemDragEventArgs e)
+        private void ListView_TXPDO_ItemDrag(object sender, ItemDragEventArgs e)
         {
 
 
-            List<ODentry> entries = new List<ODentry>();
+            List<ODentry> entries = new();
 
             foreach (ListViewItem item in listView_TXPDO.SelectedItems)
             {
@@ -641,7 +644,7 @@ namespace ODEditor
                     entries.Add((ODentry)item.Tag);
             }
 
-            DataObject data = new DataObject(DataFormats.FileDrop, entries);
+            DataObject data = new(DataFormats.FileDrop, entries);
             data.SetData(entries.ToArray());
             listView_TXPDO.DoDragDrop(data, DragDropEffects.Copy);
 
@@ -649,12 +652,11 @@ namespace ODEditor
 
 
 
-        private void grid1_DragOver(object sender, DragEventArgs e)
+        private void Grid1_DragOver(object sender, DragEventArgs e)
         {
             Point p = grid1.PointToClient(new Point(e.X, e.Y));
-            int foundrow, foundcol;
 
-            SourceGrid.Cells.Cell cell = (SourceGrid.Cells.Cell)getItemAtGridPoint(p, out foundrow, out foundcol);
+            SourceGrid.Cells.Cell cell = (SourceGrid.Cells.Cell)GetItemAtGridPoint(p, out int foundrow, out int foundcol);
 
             if (cell == null || cell.Tag == null)
             {
@@ -667,15 +669,14 @@ namespace ODEditor
             }
         }
 
-        private void grid1_DragDrop(object sender, DragEventArgs e)
+        private void Grid1_DragDrop(object sender, DragEventArgs e)
         {
             //base.OnDragDrop(sender, e);
 
             Point p = grid1.PointToClient(new Point(e.X, e.Y));
 
-            int foundrow, foundcol;
 
-            SourceGrid.Cells.Cell cell = (SourceGrid.Cells.Cell)getItemAtGridPoint(p, out foundrow, out foundcol);
+            SourceGrid.Cells.Cell cell = (SourceGrid.Cells.Cell)GetItemAtGridPoint(p, out int foundrow, out int foundcol);
 
             ODentry[] entries = (ODentry[])e.Data.GetData(typeof(ODentry[]));
             PDOlocator location = (PDOlocator)cell.Tag;
@@ -685,15 +686,15 @@ namespace ODEditor
 
             foreach (ODentry entry in entries)
             {
-                location.slot.insertMapping(location.ordinal, entry);
+                location.slot.InsertMapping(location.ordinal, entry);
             }
 
-            helper.buildmappingsfromlists();
+            helper.Buildmappingsfromlists();
             UpdatePDOinfo(false); //dont cause the list to refresh
 
         }
 
-        private void grid1_DragEnter(object sender, DragEventArgs e)
+        private void Grid1_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Copy;
         }
@@ -713,7 +714,7 @@ namespace ODEditor
 
         }
 
-        private void button_deletePDO_Click(object sender, EventArgs e)
+        private void Button_deletePDO_Click(object sender, EventArgs e)
         {
             if (selectedslot == null)
                 return;
@@ -723,7 +724,7 @@ namespace ODEditor
 
                 helper.pdoslots.Remove(selectedslot);
 
-                helper.buildmappingsfromlists();
+                helper.Buildmappingsfromlists();
                 doUpdateOD();
                 UpdatePDOinfo();
 
@@ -733,38 +734,38 @@ namespace ODEditor
 
         }
 
-        private void button_addPDO_Click(object sender, EventArgs e)
+        private void Button_addPDO_Click(object sender, EventArgs e)
         {
-            addnewPDO();
+            AddnewPDO();
         }
 
-        private void addnewPDO()
+        private void AddnewPDO()
         {
 
-            UInt16 slot = helper.findPDOslotgap(isTXPDO);
-            helper.addPDOslot(slot);
+            UInt16 slot = helper.FindPDOslotgap(isTXPDO);
+            helper.AddPDOslot(slot);
 
-            helper.buildmappingsfromlists();
+            helper.Buildmappingsfromlists();
             doUpdateOD();
             UpdatePDOinfo();
         }
 
-        private void checkBox_invalidpdo_CheckedChanged(object sender, EventArgs e)
+        private void CheckBox_invalidpdo_CheckedChanged(object sender, EventArgs e)
         {
             if (selectedslot == null)
                 return;
 
-            selectedslot.invalid = checkBox_invalidpdo.Checked;
+            selectedslot.Invalid = checkBox_invalidpdo.Checked;
 
             textBox_cob.Text = string.Format("0x{0:x4}", selectedslot.COB);
         }
 
-        private void button_savepdochanges_Click(object sender, EventArgs e)
+        private void Button_savepdochanges_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void button_savepdochanges_Click_1(object sender, EventArgs e)
+        private void Button_savepdochanges_Click_1(object sender, EventArgs e)
         {
 
             UInt16 config = libEDSsharp.EDSsharp.ConvertToUInt16(textBox_slot.Text);
@@ -784,7 +785,7 @@ namespace ODEditor
                     MessageBox.Show(string.Format("Invalid RXPDO Communication parameters index 0x{0:x4}", config));
                     return;
                 }
-            }            
+            }
 
             UInt16 inhibit = libEDSsharp.EDSsharp.ConvertToUInt16(textBox_inhibit.Text);
             UInt16 eventtimer = libEDSsharp.EDSsharp.ConvertToUInt16(textBox_eventtimer.Text);
@@ -801,7 +802,7 @@ namespace ODEditor
 
             try
             {
-                helper.buildmappingsfromlists();
+                helper.Buildmappingsfromlists();
             }
             catch (Exception ex)
             {
@@ -814,4 +815,3 @@ namespace ODEditor
 
     }
 }
-    

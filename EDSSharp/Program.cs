@@ -11,15 +11,15 @@ namespace EDSSharp
     class Program
     {
 
-        static libEDSsharp.EDSsharp eds = new EDSsharp();
-        static string gitversion = "";
+        static libEDSsharp.EDSsharp eds = new();
+        static readonly string gitversion = "";
 
         static void Main(string[] args)
         {
             try
             {
 
-                Dictionary<string, string> argskvp = new Dictionary<string, string>();
+                Dictionary<string, string> argskvp = new();
 
                 int argv = 0;
 
@@ -57,15 +57,15 @@ namespace EDSSharp
                     switch (Path.GetExtension(infile).ToLower())
                     {
                         case ".xdd":
-                            openXDDfile(infile, outfile,type);
+                            openXDDfile(infile, outfile, type);
                             break;
 
                         case ".xml":
-                            openXMLfile(infile,outfile,type);
+                            openXMLfile(infile, outfile, type);
                             break;
 
                         case ".eds":
-                            openEDSfile(infile, outfile,InfoSection.Filetype.File_EDS,type);
+                            openEDSfile(infile, outfile, InfoSection.Filetype.File_EDS, type);
                             break;
 
 
@@ -79,7 +79,7 @@ namespace EDSSharp
                     Console.WriteLine("Usage EDSEditor --type [CanOpenNode|CanOpenNodeV4] --infile file.[xdd|eds|xml] --outfile [CO_OD.c|OD]");
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
             }
@@ -87,14 +87,14 @@ namespace EDSSharp
 
         private static void openEDSfile(string infile, string outfile, InfoSection.Filetype ft, ExporterFactory.Exporter exporttype)
         {
-          
+
             eds.Loadfile(infile);
 
-            exportCOOD(outfile,exporttype);
+            exportCOOD(outfile, exporttype);
 
         }
 
-        private static void exportCOOD(string outpath,ExporterFactory.Exporter type)
+        private static void exportCOOD(string outpath, ExporterFactory.Exporter type)
         {
             string odname = outpath;
 
@@ -110,36 +110,36 @@ namespace EDSSharp
 
             exporter.export(savePath, Path.GetFileNameWithoutExtension(outpath), gitversion, eds, odname);
 
-            foreach(string warning in Warnings.warning_list)
+            foreach (string warning in Warnings.warning_list)
             {
                 Console.WriteLine("WARNING :" + warning);
             }
 
         }
 
-        private static void openXMLfile(string path,string outpath,ExporterFactory.Exporter exportertype)
+        private static void openXMLfile(string path, string outpath, ExporterFactory.Exporter exportertype)
         {
 
-            CanOpenXML coxml = new CanOpenXML();
+            CanOpenXML coxml = new();
             coxml.readXML(path);
 
-            Bridge b = new Bridge();
+            Bridge b = new();
 
             eds = b.convert(coxml.dev);
 
             eds.projectFilename = path;
-            exportCOOD(outpath,exportertype);
+            exportCOOD(outpath, exportertype);
 
         }
 
-        private static void openXDDfile(string path, string outpath,ExporterFactory.Exporter exportertype)
+        private static void openXDDfile(string path, string outpath, ExporterFactory.Exporter exportertype)
         {
-            CanOpenXDD_1_1 coxml_1_1 = new CanOpenXDD_1_1();
+            CanOpenXDD_1_1 coxml_1_1 = new();
             eds = coxml_1_1.ReadXML(path);
 
             if (eds == null)
             {
-                CanOpenXDD coxml = new CanOpenXDD();
+                CanOpenXDD coxml = new();
                 eds = coxml.readXML(path);
 
                 if (eds == null)
@@ -147,7 +147,7 @@ namespace EDSSharp
             }
 
             eds.projectFilename = path;
-            exportCOOD(outpath,exportertype);
+            exportCOOD(outpath, exportertype);
         }
     }
 }

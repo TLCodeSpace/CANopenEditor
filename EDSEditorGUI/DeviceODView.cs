@@ -171,12 +171,13 @@ namespace ODEditor
             foreach (ODentry od in eds.ods.Values)
             {
                 UInt16 index = od.Index;
-                ListViewItem lvi = new ListViewItem(new string[] {
+                ListViewItem lvi = new(new string[] {
                     string.Format("0x{0:X4}", index),
                     od.parameter_name
-                });
-
-                lvi.Tag = od;
+                })
+                {
+                    Tag = od
+                };
                 if (selectedObject != null && index == selectedObject.Index)
                     lvi.Selected = true;
                 if (od.prop.CO_disabled == true)
@@ -222,7 +223,7 @@ namespace ODEditor
 
             if (od.objecttype == ObjectType.VAR)
             {
-                ListViewItem lvi = new ListViewItem(new string[] {
+                ListViewItem lvi = new(new string[] {
                     " ", // subindex
                     od.parameter_name,
                     od.ObjectTypeString(),
@@ -231,18 +232,22 @@ namespace ODEditor
                     od.AccessPDO().ToString(),
                     od.prop.CO_accessSRDO.ToString(),
                     od.defaultvalue
-                });
-                lvi.Tag = od;
+                })
+                {
+                    Tag = od
+                };
                 listView_subObjects.Items.Add(lvi);
             }
             else if (od.objecttype == ObjectType.ARRAY || od.objecttype == ObjectType.REC)
             {
-                ListViewItem lvi = new ListViewItem(new string[]{
+                ListViewItem lvi = new(new string[]{
                     " ",
                     od.parameter_name,
                     od.ObjectTypeString()
-                });
-                lvi.Tag = od;
+                })
+                {
+                    Tag = od
+                };
                 listView_subObjects.Items.Add(lvi);
 
                 foreach (KeyValuePair<UInt16, ODentry> kvp in od.subobjects)
@@ -250,7 +255,7 @@ namespace ODEditor
                     ODentry subod = kvp.Value;
                     int subindex = kvp.Key;
 
-                    ListViewItem lvi2 = new ListViewItem(new string[] {
+                    ListViewItem lvi2 = new(new string[] {
                         string.Format("0x{0:X2}", subindex),
                         subod.parameter_name,
                         subod.ObjectTypeString(),
@@ -259,8 +264,10 @@ namespace ODEditor
                         subod.AccessPDO().ToString(),
                         subod.prop.CO_accessSRDO.ToString(),
                         subod.defaultvalue
-                    });
-                    lvi2.Tag = subod;
+                    })
+                    {
+                        Tag = subod
+                    };
                     listView_subObjects.Items.Add(lvi2);
                 }
             }
@@ -407,7 +414,8 @@ namespace ODEditor
                 {
                     od.datatype = (DataType)Enum.Parse(typeof(DataType), comboBox_dataType.SelectedItem.ToString());
                 }
-                catch (Exception) {
+                catch (Exception)
+                {
                     od.datatype = DataType.UNKNOWN;
                 }
 
@@ -460,8 +468,8 @@ namespace ODEditor
                 // CO_accessSRDO
                 try
                 {
-                    if(comboBox_accessSRDO.SelectedItem != null) 
-                    od.prop.CO_accessSRDO = (AccessSRDO)Enum.Parse(typeof(AccessSRDO), comboBox_accessSRDO.SelectedItem.ToString());
+                    if (comboBox_accessSRDO.SelectedItem != null)
+                        od.prop.CO_accessSRDO = (AccessSRDO)Enum.Parse(typeof(AccessSRDO), comboBox_accessSRDO.SelectedItem.ToString());
                 }
                 catch (Exception)
                 {
@@ -597,7 +605,7 @@ namespace ODEditor
 
             if (comboBox.SelectedItem != null && comboBox.SelectedItem.ToString() == "Add...")
             {
-                NewItem dialog = new NewItem("Add Count Label");
+                NewItem dialog = new("Add Count Label");
                 if (dialog.ShowDialog() == DialogResult.OK && comboBox.FindStringExact(dialog.name) == -1)
                 {
                     comboBox.Items.Insert(comboBox.Items.Count - 1, dialog.name);
@@ -610,9 +618,9 @@ namespace ODEditor
         {
             ComboBox comboBox = (ComboBox)sender;
 
-            if (comboBox.SelectedItem!=null && comboBox.SelectedItem.ToString() == "Add...")
+            if (comboBox.SelectedItem != null && comboBox.SelectedItem.ToString() == "Add...")
             {
-                NewItem dialog = new NewItem("Add Storage Group");
+                NewItem dialog = new("Add Storage Group");
                 if (dialog.ShowDialog() == DialogResult.OK && comboBox.FindStringExact(dialog.name) == -1)
                 {
                     comboBox.Items.Insert(comboBox.Items.Count - 1, dialog.name);
@@ -634,7 +642,7 @@ namespace ODEditor
 
             if (srcObjects.Count > 0)
             {
-                InsertObjects insObjForm = new InsertObjects(eds, srcObjects, "1");
+                InsertObjects insObjForm = new(eds, srcObjects, "1");
 
                 if (insObjForm.ShowDialog() == DialogResult.OK)
                 {
@@ -649,7 +657,7 @@ namespace ODEditor
 
         private void ContextMenu_object_add_ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            NewIndex ni = new NewIndex(eds, (UInt16)(selectedObject == null ? 0x2000 : selectedObject.Index + 1));
+            NewIndex ni = new(eds, (UInt16)(selectedObject == null ? 0x2000 : selectedObject.Index + 1));
 
             if (ni.ShowDialog() == DialogResult.OK)
             {

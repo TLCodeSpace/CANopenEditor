@@ -46,7 +46,7 @@ namespace ODEditor
 
         private void Button_create_Click(object sender, EventArgs e)
         {
-            UInt16 index = (UInt16) numericUpDown_index.Value;
+            UInt16 index = (UInt16)numericUpDown_index.Value;
             if (eds.ods.ContainsKey(index))
             {
                 MessageBox.Show(String.Format("Index 0x{0:X4} already exists in OD", index));

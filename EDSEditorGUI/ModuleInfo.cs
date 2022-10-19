@@ -31,8 +31,8 @@ namespace ODEditor
 
         private void ModuleInfo_Invalidated(object sender, InvalidateEventArgs e)
         {
-           
-            
+
+
 
         }
 
@@ -46,13 +46,13 @@ namespace ODEditor
             this.listView_modules.Items.Clear();
 
 
-            foreach(KeyValuePair<UInt16,Module> kvp  in eds.modules)
+            foreach (KeyValuePair<UInt16, Module> kvp in eds.modules)
             {
                 Module m = kvp.Value;
                 UInt16 modindex = kvp.Key;
 
                 libEDSsharp.ModuleInfo mi = m.mi;
-                ListViewItem lvi2 = new ListViewItem(String.Format("{0}", kvp.Key));
+                ListViewItem lvi2 = new(String.Format("{0}", kvp.Key));
                 lvi2.SubItems.Add(string.Format("{0}", mi.ProductName));
                 lvi2.SubItems.Add(string.Format("{0}", mi.ProductVersion));
                 lvi2.SubItems.Add(string.Format("{0}", mi.ProductRevision));
@@ -73,8 +73,8 @@ namespace ODEditor
 
 
                 listView_modules.Items.Add(lvi2);
-            
-            }         
+
+            }
 
         }
 
@@ -95,7 +95,7 @@ namespace ODEditor
 
                 if (eds.ods.ContainsKey(sindex))
                 {
-                    lvi = new ListViewItem(string.Format("0x{0:x4}",sindex));
+                    lvi = new ListViewItem(string.Format("0x{0:x4}", sindex));
                     lvi.SubItems.Add(eds.ods[sindex].parameter_name);
                 }
                 else

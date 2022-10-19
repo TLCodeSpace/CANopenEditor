@@ -51,7 +51,7 @@ namespace libEDSsharp
 
         }
 
-        public List<EDSsharp> readMultiXML(string file )
+        public List<EDSsharp> readMultiXML(string file)
         {
 
             List<EDSsharp> edss = new List<EDSsharp>();
@@ -62,7 +62,7 @@ namespace libEDSsharp
                 StreamReader reader = new StreamReader(file);
                 OpenEDSProject oep = (OpenEDSProject)serializer.Deserialize(reader);
 
-                foreach(ISO15745ProfileContainer cont in oep.ISO15745ProfileContainer)
+                foreach (ISO15745ProfileContainer cont in oep.ISO15745ProfileContainer)
                 {
                     edss.Add(convert(cont));
                 }
@@ -75,7 +75,7 @@ namespace libEDSsharp
             {
                 Console.WriteLine(e.ToString());
                 return null;
-            }    
+            }
         }
 
         public void writeMultiXML(string file, List<EDSsharp> edss)
@@ -89,10 +89,12 @@ namespace libEDSsharp
                 devs.Add(dev);
             }
 
-            OpenEDSProject oep = new OpenEDSProject();
-            oep.Version = "1.0";
+            OpenEDSProject oep = new OpenEDSProject
+            {
+                Version = "1.0",
 
-            oep.ISO15745ProfileContainer = devs;
+                ISO15745ProfileContainer = devs
+            };
 
             XmlSerializer serializer = new XmlSerializer(typeof(OpenEDSProject));
             StreamWriter writer = new StreamWriter(file);
@@ -156,9 +158,11 @@ namespace libEDSsharp
 
             p.Items = new object[2];
 
-            vendorTextLabel lab = new vendorTextLabel();
-            lab.lang = "en";
-            lab.Value = od.parameter_name;
+            vendorTextLabel lab = new vendorTextLabel
+            {
+                lang = "en",
+                Value = od.parameter_name
+            };
             p.Items[0] = lab;
 
 
@@ -166,72 +170,89 @@ namespace libEDSsharp
             //i'm not sure why two exist
 
             denotation denot = new denotation();
-            vendorTextLabel lab2 = new vendorTextLabel();
-            lab2.lang = "en";
-            lab2.Value = od.denotation;
+            vendorTextLabel lab2 = new vendorTextLabel
+            {
+                lang = "en",
+                Value = od.denotation
+            };
             denot.Items = new object[1];
             denot.Items[0] = lab2;
             p.denotation = denot;
-            
 
-            vendorTextDescription desc = new vendorTextDescription();
-            desc.lang = "en"; //fixme we could and should do better than just English
-            desc.Value = od.Description;
+
+            vendorTextDescription desc = new vendorTextDescription
+            {
+                lang = "en", //fixme we could and should do better than just English
+                Value = od.Description
+            };
             p.Items[1] = desc;
 
-            p.defaultValue = new defaultValue();
-            p.defaultValue.value = od.defaultvalue;
+            p.defaultValue = new defaultValue
+            {
+                value = od.defaultvalue
+            };
 
         }
 
 
         public ISO15745ProfileContainer convert(EDSsharp eds)
         {
-            dev = new ISO15745ProfileContainer();
-            
-            dev.ISO15745Profile = new ISO15745Profile[2];
+            dev = new ISO15745ProfileContainer
+            {
+                ISO15745Profile = new ISO15745Profile[2]
+            };
 
 
 
             //Profile 0 ProfileBody_Device_CANopen
-            dev.ISO15745Profile[0] = new ISO15745Profile();
-            dev.ISO15745Profile[0].ProfileHeader = new ProfileHeader_DataType();
+            dev.ISO15745Profile[0] = new ISO15745Profile
+            {
+                ProfileHeader = new ProfileHeader_DataType
+                {
+                    ProfileIdentification = "CAN device profile",
+                    ProfileRevision = "1",
+                    ProfileClassID = ProfileClassID_DataType.Device,
+                    ProfileName = "",
+                    ProfileSource = "",
 
-            dev.ISO15745Profile[0].ProfileHeader.ProfileIdentification = "CAN device profile";
-            dev.ISO15745Profile[0].ProfileHeader.ProfileRevision = "1";
-            dev.ISO15745Profile[0].ProfileHeader.ProfileClassID = ProfileClassID_DataType.Device;
-            dev.ISO15745Profile[0].ProfileHeader.ProfileName = "";
-            dev.ISO15745Profile[0].ProfileHeader.ProfileSource = "";
+                    ISO15745Reference = new ISO15745Reference_DataType
+                    {
+                        ISO15745Part = "1",
+                        ISO15745Edition = "1",
+                        ProfileTechnology = "CANopen"
+                    }
+                },
 
-            dev.ISO15745Profile[0].ProfileHeader.ISO15745Reference = new ISO15745Reference_DataType();
-            dev.ISO15745Profile[0].ProfileHeader.ISO15745Reference.ISO15745Part = "1";
-            dev.ISO15745Profile[0].ProfileHeader.ISO15745Reference.ISO15745Edition = "1";
-            dev.ISO15745Profile[0].ProfileHeader.ISO15745Reference.ProfileTechnology = "CANopen";
-
-            dev.ISO15745Profile[0].ProfileBody = new ProfileBody_Device_CANopen();
+                ProfileBody = new ProfileBody_Device_CANopen()
+            };
 
             ProfileBody_Device_CANopen device = (ProfileBody_Device_CANopen)dev.ISO15745Profile[0].ProfileBody;
 
-            device.DeviceIdentity = new DeviceIdentity();
+            device.DeviceIdentity = new DeviceIdentity
+            {
+                vendorName = new vendorName
+                {
+                    Value = eds.di.VendorName,
+                    readOnly = true
+                },
 
-            device.DeviceIdentity.vendorName = new vendorName();
-            device.DeviceIdentity.vendorName.Value = eds.di.VendorName;
-            device.DeviceIdentity.vendorName.readOnly = true;
+                vendorID = new vendorID
+                {
+                    Value = eds.di.VendorNumber,
+                    readOnly = true
+                },
 
-            device.DeviceIdentity.vendorID = new vendorID();
-            device.DeviceIdentity.vendorID.Value = eds.di.VendorNumber;
-            device.DeviceIdentity.vendorID.readOnly = true;
+                deviceFamily = new deviceFamily(),
 
-            device.DeviceIdentity.deviceFamily = new deviceFamily();
-
-            device.DeviceIdentity.productFamily = new productFamily();
+                productFamily = new productFamily()
+            };
 
             //device.DeviceIdentity.orderNumber = 
 
             device.fileCreationDate = eds.fi.CreationDateTime;
             device.fileCreationTime = eds.fi.CreationDateTime;
             device.fileCreationTimeSpecified = true;
-            
+
             device.fileModificationDate = eds.fi.ModificationDateTime;
             device.fileModificationTime = eds.fi.ModificationDateTime;
             device.fileModificationDateSpecified = true;
@@ -245,28 +266,36 @@ namespace libEDSsharp
             device.fileVersion = eds.fi.FileVersion;
 
             device.fileName = Path.GetFileName(eds.projectFilename);
-            
+
 
             //device.DeviceIdentity.vendorText
             //device.DeviceIdentity.deviceFamily
             //device.DeviceIdentity.productFamily;
 
-            device.DeviceIdentity.productName = new productName();
-            device.DeviceIdentity.productName.Value = eds.di.ProductName;
-            device.DeviceIdentity.productName.readOnly = true;
+            device.DeviceIdentity.productName = new productName
+            {
+                Value = eds.di.ProductName,
+                readOnly = true
+            };
 
-            device.DeviceIdentity.productID = new productID();
-            device.DeviceIdentity.productID.Value = eds.di.ProductNumber;
-            device.DeviceIdentity.productID.readOnly = true;
+            device.DeviceIdentity.productID = new productID
+            {
+                Value = eds.di.ProductNumber,
+                readOnly = true
+            };
 
-            device.DeviceIdentity.productText = new productText();
-            device.DeviceIdentity.productText.Items = new object[1];
+            device.DeviceIdentity.productText = new productText
+            {
+                Items = new object[1]
+            };
 
 
-            vendorTextDescription des = new vendorTextDescription();
-            des.lang = "en";
+            vendorTextDescription des = new vendorTextDescription
+            {
+                lang = "en",
 
-            des.Value = String.Format("FileDescription={0}|EdsVersion={1}|FileRevision={2}|RevisionNum={3}",eds.fi.Description,eds.fi.EDSVersion,eds.fi.FileVersion,eds.fi.FileRevision);
+                Value = String.Format("FileDescription={0}|EdsVersion={1}|FileRevision={2}|RevisionNum={3}", eds.fi.Description, eds.fi.EDSVersion, eds.fi.FileVersion, eds.fi.FileRevision)
+            };
 
             device.DeviceIdentity.productText.Items[0] = des;
             device.DeviceIdentity.productText.readOnly = true;
@@ -275,35 +304,53 @@ namespace libEDSsharp
 
             device.DeviceIdentity.version = new version[3];
 
-            device.DeviceIdentity.version[0] = new version();
-            device.DeviceIdentity.version[0].readOnly = true;
-            device.DeviceIdentity.version[0].versionType = versionVersionType.SW;
+            device.DeviceIdentity.version[0] = new version
+            {
+                readOnly = true,
+                versionType = versionVersionType.SW
+            };
 
-            device.DeviceIdentity.version[1] = new version();
-            device.DeviceIdentity.version[1].readOnly = true;
-            device.DeviceIdentity.version[1].versionType = versionVersionType.FW;
+            device.DeviceIdentity.version[1] = new version
+            {
+                readOnly = true,
+                versionType = versionVersionType.FW
+            };
 
-            device.DeviceIdentity.version[2] = new version();
-            device.DeviceIdentity.version[2].readOnly = true;
-            device.DeviceIdentity.version[2].versionType = versionVersionType.HW;
+            device.DeviceIdentity.version[2] = new version
+            {
+                readOnly = true,
+                versionType = versionVersionType.HW
+            };
 
             //device.DeviceIdentity.specificationRevision.value = 
-            device.DeviceIdentity.specificationRevision = new specificationRevision();
-            device.DeviceIdentity.specificationRevision.readOnly = true;
+            device.DeviceIdentity.specificationRevision = new specificationRevision
+            {
+                readOnly = true
+            };
 
-            device.DeviceIdentity.instanceName = new instanceName();
-            //device.DeviceIdentity.instanceName.Value = ;
-            device.DeviceIdentity.instanceName.readOnly = true;
+            device.DeviceIdentity.instanceName = new instanceName
+            {
+                //device.DeviceIdentity.instanceName.Value = ;
+                readOnly = true
+            };
 
 
-            device.DeviceManager = new DeviceManager();
-            device.DeviceManager.indicatorList = new indicatorList();
-            device.DeviceManager.indicatorList.LEDList = new LEDList();
-            device.DeviceManager.indicatorList.LEDList.LED = new LED[1]; //fixme
-            device.DeviceManager.indicatorList.LEDList.LED[0] = new LED();
-            device.DeviceManager.indicatorList.LEDList.LED[0].LEDcolors = LEDLEDcolors.monocolor;
-            device.DeviceManager.indicatorList.LEDList.LED[0].LEDtype = LEDLEDtype.device;
-            device.DeviceManager.indicatorList.LEDList.LED[0].Items = new object[1];
+            device.DeviceManager = new DeviceManager
+            {
+                indicatorList = new indicatorList
+                {
+                    LEDList = new LEDList
+                    {
+                        LED = new LED[1] //fixme
+                    }
+                }
+            };
+            device.DeviceManager.indicatorList.LEDList.LED[0] = new LED
+            {
+                LEDcolors = LEDLEDcolors.monocolor,
+                LEDtype = LEDLEDtype.device,
+                Items = new object[1]
+            };
 
             // LEDstate ls = new LEDstate();
             // ls.uniqueID = "LED_State_1";
@@ -317,9 +364,10 @@ namespace libEDSsharp
 
 
             device.ApplicationProcess = new ApplicationProcess[1];
-            device.ApplicationProcess[0] = new ApplicationProcess();
-
-            device.ApplicationProcess[0].parameterList = new parameter[eds.GetNoEnabledObjects(true)];
+            device.ApplicationProcess[0] = new ApplicationProcess
+            {
+                parameterList = new parameter[eds.GetNoEnabledObjects(true)]
+            };
 
             int ordinal = 0;
 
@@ -350,22 +398,26 @@ namespace libEDSsharp
 
 
             //Profile 1 ProfileClassID_DataType.CommunicationNetwork
-            dev.ISO15745Profile[1] = new ISO15745Profile();
+            dev.ISO15745Profile[1] = new ISO15745Profile
+            {
+                ProfileHeader = new ProfileHeader_DataType
+                {
+                    ProfileIdentification = "CAN comm net profile",
+                    ProfileRevision = "1",
+                    ProfileClassID = ProfileClassID_DataType.CommunicationNetwork,
+                    ProfileName = "",
+                    ProfileSource = "",
 
-            dev.ISO15745Profile[1].ProfileHeader = new ProfileHeader_DataType();
+                    ISO15745Reference = new ISO15745Reference_DataType
+                    {
+                        ISO15745Part = "1",
+                        ISO15745Edition = "1",
+                        ProfileTechnology = "CANopen"
+                    }
+                },
 
-            dev.ISO15745Profile[1].ProfileHeader.ProfileIdentification = "CAN comm net profile";
-            dev.ISO15745Profile[1].ProfileHeader.ProfileRevision = "1";
-            dev.ISO15745Profile[1].ProfileHeader.ProfileClassID = ProfileClassID_DataType.CommunicationNetwork;
-            dev.ISO15745Profile[1].ProfileHeader.ProfileName = "";
-            dev.ISO15745Profile[1].ProfileHeader.ProfileSource = "";
-
-            dev.ISO15745Profile[1].ProfileHeader.ISO15745Reference = new ISO15745Reference_DataType();
-            dev.ISO15745Profile[1].ProfileHeader.ISO15745Reference.ISO15745Part = "1";
-            dev.ISO15745Profile[1].ProfileHeader.ISO15745Reference.ISO15745Edition = "1";
-            dev.ISO15745Profile[1].ProfileHeader.ISO15745Reference.ProfileTechnology = "CANopen";
-
-            dev.ISO15745Profile[1].ProfileBody = new ProfileBody_CommunicationNetwork_CANopen();
+                ProfileBody = new ProfileBody_CommunicationNetwork_CANopen()
+            };
             ProfileBody_CommunicationNetwork_CANopen comnet = (ProfileBody_CommunicationNetwork_CANopen)dev.ISO15745Profile[1].ProfileBody;
             comnet.Items = new object[3];
 
@@ -393,13 +445,13 @@ namespace libEDSsharp
             comnet.Items[2] = new ProfileBody_CommunicationNetwork_CANopenNetworkManagement();
             ProfileBody_CommunicationNetwork_CANopenNetworkManagement NetworkManagement = (ProfileBody_CommunicationNetwork_CANopenNetworkManagement)comnet.Items[2];
 
-            AppLayer.CANopenObjectList = new CANopenObjectList();
+            AppLayer.CANopenObjectList = new CANopenObjectList
+            {
+                CANopenObject = new CANopenObjectListCANopenObject[eds.GetNoEnabledObjects()]
+            };
 
-
-            AppLayer.CANopenObjectList.CANopenObject = new CANopenObjectListCANopenObject[eds.GetNoEnabledObjects()];
-            
             int count = 0;
-            foreach (KeyValuePair<UInt16,ODentry> kvp in eds.ods)
+            foreach (KeyValuePair<UInt16, ODentry> kvp in eds.ods)
             {
                 ODentry od = kvp.Value;
                 UInt16 subindex = kvp.Key;
@@ -423,19 +475,23 @@ namespace libEDSsharp
                 // https://github.com/robincornelius/libedssharp/issues/128
                 EDSsharp.AccessType accesstype = od.accesstype;
                 PDOMappingType PDOtype = od.PDOtype;
-                if (accesstype == EDSsharp.AccessType.rww) {
+                if (accesstype == EDSsharp.AccessType.rww)
+                {
                     accesstype = EDSsharp.AccessType.rw;
 
                     // when optional, set it to the corresponding type
-                    if (PDOtype == PDOMappingType.optional) {
+                    if (PDOtype == PDOMappingType.optional)
+                    {
                         PDOtype = PDOMappingType.RPDO;
                     }
                 }
-                if (accesstype == EDSsharp.AccessType.rwr) {
+                if (accesstype == EDSsharp.AccessType.rwr)
+                {
                     accesstype = EDSsharp.AccessType.rw;
 
                     // when optional, set it to the corresponding type
-                    if (PDOtype == PDOMappingType.optional) {
+                    if (PDOtype == PDOMappingType.optional)
+                    {
                         PDOtype = PDOMappingType.TPDO;
                     }
                 }
@@ -455,7 +511,7 @@ namespace libEDSsharp
                     AppLayer.CANopenObjectList.CANopenObject[count].accessTypeSpecified = false;
                 }
 
-                AppLayer.CANopenObjectList.CANopenObject[count].PDOmapping = (CANopenObjectListCANopenObjectPDOmapping)Enum.Parse(typeof(CANopenObjectListCANopenObjectPDOmapping),PDOtype.ToString());
+                AppLayer.CANopenObjectList.CANopenObject[count].PDOmapping = (CANopenObjectListCANopenObjectPDOmapping)Enum.Parse(typeof(CANopenObjectListCANopenObjectPDOmapping), PDOtype.ToString());
                 AppLayer.CANopenObjectList.CANopenObject[count].PDOmappingSpecified = true;
 
                 AppLayer.CANopenObjectList.CANopenObject[count].uniqueIDRef = String.Format("UID_PARAM_{0:x4}", od.Index);
@@ -478,7 +534,7 @@ namespace libEDSsharp
 
                     int subcount = 0;
 
-                    foreach ( KeyValuePair<UInt16,ODentry> kvp2 in od.subobjects)
+                    foreach (KeyValuePair<UInt16, ODentry> kvp2 in od.subobjects)
                     {
                         ODentry subod = kvp2.Value;
                         UInt16 subindex2 = kvp2.Key;
@@ -506,24 +562,28 @@ namespace libEDSsharp
                         // https://github.com/robincornelius/libedssharp/issues/128
                         accesstype = subod.accesstype;
                         PDOtype = subod.PDOtype;
-                        if (accesstype == EDSsharp.AccessType.rww) {
+                        if (accesstype == EDSsharp.AccessType.rww)
+                        {
                             accesstype = EDSsharp.AccessType.rw;
 
                             // when optional is set, 
-                            if (PDOtype == PDOMappingType.optional) {
+                            if (PDOtype == PDOMappingType.optional)
+                            {
                                 PDOtype = PDOMappingType.RPDO;
                             }
                         }
-                        if (accesstype == EDSsharp.AccessType.rwr) {
+                        if (accesstype == EDSsharp.AccessType.rwr)
+                        {
                             accesstype = EDSsharp.AccessType.rw;
 
                             // when optional is set, 
-                            if (PDOtype == PDOMappingType.optional) {
+                            if (PDOtype == PDOMappingType.optional)
+                            {
                                 PDOtype = PDOMappingType.TPDO;
                             }
                         }
                         AppLayer.CANopenObjectList.CANopenObject[count].CANopenSubObject[subcount].dataType = bytes;
-                        AppLayer.CANopenObjectList.CANopenObject[count].CANopenSubObject[subcount].PDOmapping = (CANopenObjectListCANopenObjectCANopenSubObjectPDOmapping)Enum.Parse(typeof(CANopenObjectListCANopenObjectCANopenSubObjectPDOmapping),PDOtype.ToString());
+                        AppLayer.CANopenObjectList.CANopenObject[count].CANopenSubObject[subcount].PDOmapping = (CANopenObjectListCANopenObjectCANopenSubObjectPDOmapping)Enum.Parse(typeof(CANopenObjectListCANopenObjectCANopenSubObjectPDOmapping), PDOtype.ToString());
                         AppLayer.CANopenObjectList.CANopenObject[count].CANopenSubObject[subcount].PDOmappingSpecified = true;
                         AppLayer.CANopenObjectList.CANopenObject[count].CANopenSubObject[subcount].uniqueIDRef = String.Format("UID_PARAM_{0:x4}{1:x2}", od.Index, subindex2);
                         AppLayer.CANopenObjectList.CANopenObject[count].CANopenSubObject[subcount].accessType = (CANopenObjectListCANopenObjectCANopenSubObjectAccessType)Enum.Parse(typeof(CANopenObjectListCANopenObjectCANopenSubObjectAccessType), accesstype.ToString());
@@ -582,8 +642,10 @@ namespace libEDSsharp
                 bauds++;
 
             //Fixme auto baudrate needs adding to system
-            TransportLayer.PhysicalLayer.baudRate = new ProfileBody_CommunicationNetwork_CANopenTransportLayersPhysicalLayerBaudRate();
-            TransportLayer.PhysicalLayer.baudRate.supportedBaudRate = new ProfileBody_CommunicationNetwork_CANopenTransportLayersPhysicalLayerBaudRateSupportedBaudRate[bauds];
+            TransportLayer.PhysicalLayer.baudRate = new ProfileBody_CommunicationNetwork_CANopenTransportLayersPhysicalLayerBaudRate
+            {
+                supportedBaudRate = new ProfileBody_CommunicationNetwork_CANopenTransportLayersPhysicalLayerBaudRateSupportedBaudRate[bauds]
+            };
 
             for (int x = 0; x < bauds; x++)
             {
@@ -634,37 +696,41 @@ namespace libEDSsharp
             }
 
 
-            NetworkManagement.CANopenGeneralFeatures = new ProfileBody_CommunicationNetwork_CANopenNetworkManagementCANopenGeneralFeatures();
+            NetworkManagement.CANopenGeneralFeatures = new ProfileBody_CommunicationNetwork_CANopenNetworkManagementCANopenGeneralFeatures
+            {
+                bootUpSlave = eds.di.SimpleBootUpSlave,
+                //NetworkManagment.CANopenGeneralFeatures.dynamicChannels = eds.di.DynamicChannelsSupported;   //fix me count of dynamic channels not handled yet eds only has bool
+                granularity = eds.di.Granularity,
+                groupMessaging = eds.di.GroupMessaging,
 
-            NetworkManagement.CANopenGeneralFeatures.bootUpSlave = eds.di.SimpleBootUpSlave;
-            //NetworkManagment.CANopenGeneralFeatures.dynamicChannels = eds.di.DynamicChannelsSupported;   //fix me count of dynamic channels not handled yet eds only has bool
-            NetworkManagement.CANopenGeneralFeatures.granularity = eds.di.Granularity;
-            NetworkManagement.CANopenGeneralFeatures.groupMessaging = eds.di.GroupMessaging;
-
-            NetworkManagement.CANopenGeneralFeatures.layerSettingServiceSlave = eds.di.LSS_Supported;
-            NetworkManagement.CANopenGeneralFeatures.nrOfRxPDO = eds.di.NrOfRXPDO;
-            NetworkManagement.CANopenGeneralFeatures.nrOfTxPDO = eds.di.NrOfTXPDO;
+                layerSettingServiceSlave = eds.di.LSS_Supported,
+                nrOfRxPDO = eds.di.NrOfRXPDO,
+                nrOfTxPDO = eds.di.NrOfTXPDO
+            };
             //extra items
             //NetworkManagment.CANopenGeneralFeatures.SDORequestingDevice;
             //NetworkManagment.CANopenGeneralFeatures.selfStartingDevice;
 
-            NetworkManagement.CANopenMasterFeatures = new ProfileBody_CommunicationNetwork_CANopenNetworkManagementCANopenMasterFeatures();
+            NetworkManagement.CANopenMasterFeatures = new ProfileBody_CommunicationNetwork_CANopenNetworkManagementCANopenMasterFeatures
+            {
+                bootUpMaster = eds.di.SimpleBootUpMaster,
 
-            NetworkManagement.CANopenMasterFeatures.bootUpMaster = eds.di.SimpleBootUpMaster;
-
-            //Extra items
-            //NetworkManagment.CANopenMasterFeatures.configurationManager;
-            //NetworkManagment.CANopenMasterFeatures.flyingMaster;
-            NetworkManagement.CANopenMasterFeatures.layerSettingServiceMaster = eds.di.LSS_Master;
+                //Extra items
+                //NetworkManagment.CANopenMasterFeatures.configurationManager;
+                //NetworkManagment.CANopenMasterFeatures.flyingMaster;
+                layerSettingServiceMaster = eds.di.LSS_Master
+            };
             //NetworkManagment.CANopenMasterFeatures.SDOManager;
 
 
-            NetworkManagement.deviceCommissioning = new ProfileBody_CommunicationNetwork_CANopenNetworkManagementDeviceCommissioning();
-            NetworkManagement.deviceCommissioning.actualBaudRate = eds.dc.BaudRate.ToString();
-            NetworkManagement.deviceCommissioning.nodeID = eds.dc.NodeId;
-            NetworkManagement.deviceCommissioning.networkName = eds.dc.NetworkName;
-            NetworkManagement.deviceCommissioning.networkNumber = eds.dc.NetNumber;
-            NetworkManagement.deviceCommissioning.CANopenManager = eds.dc.CANopenManager;
+            NetworkManagement.deviceCommissioning = new ProfileBody_CommunicationNetwork_CANopenNetworkManagementDeviceCommissioning
+            {
+                actualBaudRate = eds.dc.BaudRate.ToString(),
+                nodeID = eds.dc.NodeId,
+                networkName = eds.dc.NetworkName,
+                networkNumber = eds.dc.NetNumber,
+                CANopenManager = eds.dc.CANopenManager
+            };
 
             //fixme unconnected
             //eds.dc.LSS_SerialNumber;
@@ -682,8 +748,8 @@ namespace libEDSsharp
 
             //Find Object Dictionary entries
 
-           //fixme??
-           // ProfileBody_DataType dt;
+            //fixme??
+            // ProfileBody_DataType dt;
 
 
             ProfileBody_CommunicationNetwork_CANopen body_network = null;
@@ -838,7 +904,7 @@ namespace libEDSsharp
 
                 if (TransportLayers != null)
                 {
-                    if(TransportLayers.PhysicalLayer!=null)
+                    if (TransportLayers.PhysicalLayer != null)
                     {
                         if (TransportLayers.PhysicalLayer.baudRate != null)
                         {
@@ -981,7 +1047,7 @@ namespace libEDSsharp
                         if (obj3.edseditor_extension_notifyonchange)
                             entry.prop.CO_flagsPDO = obj3.edseditor_extension_notifyonchange;
 
-                            
+
 
                         //FIXME im not sure this is correct
                         if (obj3.objFlags != null)
@@ -1004,7 +1070,7 @@ namespace libEDSsharp
                             entry.accesstype = EDSsharp.AccessType.ro; //fixme sensible default required here??    
                         }
 
-                        if(obj3.PDOmappingSpecified)
+                        if (obj3.PDOmappingSpecified)
                         {
 
                             entry.PDOtype = (PDOMappingType)Enum.Parse(typeof(PDOMappingType), obj3.PDOmapping.ToString());
@@ -1045,7 +1111,7 @@ namespace libEDSsharp
                                 }
 
 
-                       
+
                                 // https://github.com/robincornelius/libedssharp/issues/128
                                 // Mapping of accesstype and pdo mappings have changed between EDS and XDD
                                 // in EDS we have rw,wo, r and const which are the same in both standards, but EDS also
@@ -1061,13 +1127,13 @@ namespace libEDSsharp
                                 {
                                     accesstype = entry.accesstype;
                                 }
-                           
+
                                 if (subobj.PDOmappingSpecified == true)
                                 {
 
                                     pdotype = (PDOMappingType)Enum.Parse(typeof(PDOMappingType), subobj.PDOmapping.ToString());
 
-                                    if(accesstype == EDSsharp.AccessType.rw && pdotype == PDOMappingType.RPDO)
+                                    if (accesstype == EDSsharp.AccessType.rw && pdotype == PDOMappingType.RPDO)
                                     {
                                         accesstype = EDSsharp.AccessType.rww;
                                     }
@@ -1091,19 +1157,19 @@ namespace libEDSsharp
 
                                 subentry.prop.CO_flagsPDO = subobj.edseditor_extension_notifyonchange;
 
-                                if (subobj.lowLimit!=null)
+                                if (subobj.lowLimit != null)
                                     subentry.LowLimit = subobj.lowLimit;
 
-                                if(subobj.highLimit!=null)
+                                if (subobj.highLimit != null)
                                     subentry.HighLimit = subobj.highLimit;
 
-                                if(subobj.actualValue!=null)
+                                if (subobj.actualValue != null)
                                     subentry.actualvalue = subobj.actualValue;
 
-                                if(subobj.denotation!=null)
+                                if (subobj.denotation != null)
                                     subentry.denotation = subobj.denotation;
 
-                                if(subobj.objFlags!=null)
+                                if (subobj.objFlags != null)
                                     subentry.ObjFlags = subobj.objFlags[0];
 
 
@@ -1115,7 +1181,7 @@ namespace libEDSsharp
                         }
 
 
-                }
+                    }
 
             }
 
@@ -1142,12 +1208,12 @@ namespace libEDSsharp
                             String desc = ((vendorTextDescription)o).Value;
                             string[] bits = desc.Split('|');
 
-                            foreach(string bit in bits)
+                            foreach (string bit in bits)
                             {
                                 string[] keyvalue = bit.Split('=');
-                                if(keyvalue.Length==2)
+                                if (keyvalue.Length == 2)
                                 {
-                                    switch(keyvalue[0])
+                                    switch (keyvalue[0])
                                     {
                                         case "FileDescription":
                                             eds.fi.Description = keyvalue[1];
@@ -1159,9 +1225,9 @@ namespace libEDSsharp
                                             eds.fi.FileVersion = keyvalue[1];
                                             break;
                                         case "RevisionNum":
-                                            byte.TryParse(keyvalue[1], out eds.fi.FileRevision);                                            break;
+                                            byte.TryParse(keyvalue[1], out eds.fi.FileRevision); break;
 
-                                                
+
                                     }
                                 }
                             }
@@ -1232,11 +1298,11 @@ namespace libEDSsharp
 
                             //fix me, if more than one vendorTextDescription is present, eg
                             //multi language this will result in the last one being used
-                            if (param.Items!=null && param.Items.Length>0)
+                            if (param.Items != null && param.Items.Length > 0)
                             {
-                                foreach(object item in param.Items)
+                                foreach (object item in param.Items)
                                 {
-                                    if(item.GetType() == typeof(vendorTextDescription))
+                                    if (item.GetType() == typeof(vendorTextDescription))
                                     {
                                         vendorTextDescription vtd = (vendorTextDescription)item;
                                         od.Description = vtd.Value;
@@ -1248,7 +1314,7 @@ namespace libEDSsharp
 
                             //FIXME: if we have a denotation set for an object in the <parameterList> section but it is not set on the object
                             //use the <parameterList> one. We may discover that this is used for something else and can be removed??
-                            if ((od.denotation==null || od.denotation=="") && param.denotation!=null && param.denotation.Items.Length>0)
+                            if ((od.denotation == null || od.denotation == "") && param.denotation != null && param.denotation.Items.Length > 0)
                             {
                                 foreach (object item in param.denotation.Items)
                                 {
@@ -3059,7 +3125,7 @@ namespace CanOpenXSD_1_0
             }
         }
 
-      
+
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]

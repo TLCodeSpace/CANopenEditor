@@ -59,7 +59,7 @@ namespace ODEditor
             dataGridView_InitialColumnCount = dataGridView.ColumnCount;
 
             enabled = new bool[srcObjects.Count];
-            for(int i = 0; i < enabled.Length; i++)
+            for (int i = 0; i < enabled.Length; i++)
                 enabled[i] = true;
 
             Verify(initialOffset == "0");
@@ -103,7 +103,7 @@ namespace ODEditor
             // write rows and verify errors
             bool newIndexesValid = true;
             var newIndexes = new List<int>();
-            DataGridViewCellStyle styleErr = new DataGridViewCellStyle
+            DataGridViewCellStyle styleErr = new()
             {
                 Font = new Font(dataGridView.Font, FontStyle.Bold),
                 ForeColor = Color.Red

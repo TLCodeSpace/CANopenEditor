@@ -41,9 +41,13 @@ namespace libEDSsharp
         {
             eds.UpdatePDOcount();
 
-            Device dev = new Device();
-            dev.CANopenObjectList = new Xml2CSharp.CANopenObjectList();
-            dev.CANopenObjectList.CANopenObject = new List<Xml2CSharp.CANopenObject>();
+            Device dev = new Device
+            {
+                CANopenObjectList = new Xml2CSharp.CANopenObjectList
+                {
+                    CANopenObject = new List<Xml2CSharp.CANopenObject>()
+                }
+            };
 
             /* OBJECT DICTIONARY */
 
@@ -73,12 +77,14 @@ namespace libEDSsharp
                         }
                     }
 
-                    Xml2CSharp.CANopenObject coo = new Xml2CSharp.CANopenObject();
-                    coo.Index = string.Format("{0:x4}", od.Index);
-                    coo.Name = od.parameter_name;
-                    coo.ObjectType = od.objecttype.ToString();
-                    coo.Disabled = od.prop.CO_disabled.ToString().ToLower();
-                    coo.MemoryType = od.prop.CO_storageGroup;
+                    Xml2CSharp.CANopenObject coo = new Xml2CSharp.CANopenObject
+                    {
+                        Index = string.Format("{0:x4}", od.Index),
+                        Name = od.parameter_name,
+                        ObjectType = od.objecttype.ToString(),
+                        Disabled = od.prop.CO_disabled.ToString().ToLower(),
+                        MemoryType = od.prop.CO_storageGroup
+                    };
                     eds.CO_storageGroups.Add(od.prop.CO_storageGroup);
                     coo.AccessType = od.accesstype.ToString();
                     coo.DataType = string.Format("0x{0:x2}", (int)od.datatype);
@@ -88,8 +94,10 @@ namespace libEDSsharp
                     coo.PDOmapping = od.PDOtype.ToString();
                     coo.TPDOdetectCOS = od.prop.CO_flagsPDO.ToString().ToLower();
 
-                    coo.Description = new Xml2CSharp.Description();
-                    coo.Description.Text = od.Description;
+                    coo.Description = new Xml2CSharp.Description
+                    {
+                        Text = od.Description
+                    };
 
                     //if (od.objecttype == ObjectType.ARRAY || od.objecttype == ObjectType.REC)
                     {
@@ -101,20 +109,23 @@ namespace libEDSsharp
                             ODentry subod = kvp2.Value;
                             UInt16 subindex = kvp2.Key;
 
-                            Xml2CSharp.CANopenSubObject sub = new Xml2CSharp.CANopenSubObject();
-
-                            sub.Name = subod.parameter_name;
-                            sub.Description = new Xml2CSharp.Description();
-                            sub.Description.Text = subod.Description;
-                            sub.ObjectType = subod.objecttype.ToString();
-                            sub.AccessType = subod.accesstype == EDSsharp.AccessType.UNKNOWN ? od.accesstype.ToString() : subod.accesstype.ToString();
-                            sub.DataType = string.Format("0x{0:x2}", (int)(subod.datatype == DataType.UNKNOWN ? od.datatype : subod.datatype));
-                            sub.DefaultValue = subod.defaultvalue;
-                            sub.HighValue = subod.HighLimit;
-                            sub.LowValue = subod.LowLimit;
-                            sub.PDOmapping = subod.PDOtype.ToString();
-                            sub.SubIndex = String.Format("{0:x2}", subindex);
-                            sub.TPDOdetectCOS = (subod.prop.CO_flagsPDO ? subod.prop.CO_flagsPDO : od.prop.CO_flagsPDO).ToString().ToLower();
+                            Xml2CSharp.CANopenSubObject sub = new Xml2CSharp.CANopenSubObject
+                            {
+                                Name = subod.parameter_name,
+                                Description = new Xml2CSharp.Description
+                                {
+                                    Text = subod.Description
+                                },
+                                ObjectType = subod.objecttype.ToString(),
+                                AccessType = subod.accesstype == EDSsharp.AccessType.UNKNOWN ? od.accesstype.ToString() : subod.accesstype.ToString(),
+                                DataType = string.Format("0x{0:x2}", (int)(subod.datatype == DataType.UNKNOWN ? od.datatype : subod.datatype)),
+                                DefaultValue = subod.defaultvalue,
+                                HighValue = subod.HighLimit,
+                                LowValue = subod.LowLimit,
+                                PDOmapping = subod.PDOtype.ToString(),
+                                SubIndex = String.Format("{0:x2}", subindex),
+                                TPDOdetectCOS = (subod.prop.CO_flagsPDO ? subod.prop.CO_flagsPDO : od.prop.CO_flagsPDO).ToString().ToLower()
+                            };
                             coo.CANopenSubObject.Add(sub);
 
                         }
@@ -128,82 +139,120 @@ namespace libEDSsharp
 
             /* DUMMY USAGE */
 
-            dev.Other = new Xml2CSharp.Other();
-            dev.Other.DummyUsage = new Xml2CSharp.DummyUsage();
-            dev.Other.DummyUsage.Dummy = new List<Xml2CSharp.Dummy>();
+            dev.Other = new Xml2CSharp.Other
+            {
+                DummyUsage = new Xml2CSharp.DummyUsage
+                {
+                    Dummy = new List<Xml2CSharp.Dummy>()
+                }
+            };
 
             Xml2CSharp.Dummy d;
 
-            d = new Xml2CSharp.Dummy();
-            d.Entry = eds.du.Dummy0001.ToString();
+            d = new Xml2CSharp.Dummy
+            {
+                Entry = eds.du.Dummy0001.ToString()
+            };
             dev.Other.DummyUsage.Dummy.Add(d);
-            d = new Xml2CSharp.Dummy();
-            d.Entry = eds.du.Dummy0002.ToString();
+            d = new Xml2CSharp.Dummy
+            {
+                Entry = eds.du.Dummy0002.ToString()
+            };
             dev.Other.DummyUsage.Dummy.Add(d);
-            d = new Xml2CSharp.Dummy();
-            d.Entry = eds.du.Dummy0003.ToString();
+            d = new Xml2CSharp.Dummy
+            {
+                Entry = eds.du.Dummy0003.ToString()
+            };
             dev.Other.DummyUsage.Dummy.Add(d);
-            d = new Xml2CSharp.Dummy();
-            d.Entry = eds.du.Dummy0004.ToString();
+            d = new Xml2CSharp.Dummy
+            {
+                Entry = eds.du.Dummy0004.ToString()
+            };
             dev.Other.DummyUsage.Dummy.Add(d);
-            d = new Xml2CSharp.Dummy();
-            d.Entry = eds.du.Dummy0005.ToString();
+            d = new Xml2CSharp.Dummy
+            {
+                Entry = eds.du.Dummy0005.ToString()
+            };
             dev.Other.DummyUsage.Dummy.Add(d);
-            d = new Xml2CSharp.Dummy();
-            d.Entry = eds.du.Dummy0006.ToString();
+            d = new Xml2CSharp.Dummy
+            {
+                Entry = eds.du.Dummy0006.ToString()
+            };
             dev.Other.DummyUsage.Dummy.Add(d);
-            d = new Xml2CSharp.Dummy();
-            d.Entry = eds.du.Dummy0007.ToString();
+            d = new Xml2CSharp.Dummy
+            {
+                Entry = eds.du.Dummy0007.ToString()
+            };
             dev.Other.DummyUsage.Dummy.Add(d);
 
 
             Xml2CSharp.SupportedBaudRate baud = new Xml2CSharp.SupportedBaudRate();
-            dev.Other.BaudRate = new Xml2CSharp.BaudRate();
-            dev.Other.BaudRate.SupportedBaudRate = new List<Xml2CSharp.SupportedBaudRate>();
+            dev.Other.BaudRate = new Xml2CSharp.BaudRate
+            {
+                SupportedBaudRate = new List<Xml2CSharp.SupportedBaudRate>()
+            };
 
             baud.Value = "10 Kbps";
             if (eds.di.BaudRate_10 == true)
                 dev.Other.BaudRate.SupportedBaudRate.Add(baud);
 
-            baud = new Xml2CSharp.SupportedBaudRate();
-            baud.Value = "20 Kbps";
+            baud = new Xml2CSharp.SupportedBaudRate
+            {
+                Value = "20 Kbps"
+            };
             if (eds.di.BaudRate_20 == true)
                 dev.Other.BaudRate.SupportedBaudRate.Add(baud);
 
-            baud = new Xml2CSharp.SupportedBaudRate();
-            baud.Value = "50 Kbps";
+            baud = new Xml2CSharp.SupportedBaudRate
+            {
+                Value = "50 Kbps"
+            };
             if (eds.di.BaudRate_50 == true)
                 dev.Other.BaudRate.SupportedBaudRate.Add(baud);
 
-            baud = new Xml2CSharp.SupportedBaudRate();
-            baud.Value = "125 Kbps";
+            baud = new Xml2CSharp.SupportedBaudRate
+            {
+                Value = "125 Kbps"
+            };
             if (eds.di.BaudRate_125 == true)
                 dev.Other.BaudRate.SupportedBaudRate.Add(baud);
 
-            baud = new Xml2CSharp.SupportedBaudRate();
-            baud.Value = "250 Kbps";
+            baud = new Xml2CSharp.SupportedBaudRate
+            {
+                Value = "250 Kbps"
+            };
             if (eds.di.BaudRate_250 == true)
                 dev.Other.BaudRate.SupportedBaudRate.Add(baud);
 
-            baud = new Xml2CSharp.SupportedBaudRate();
-            baud.Value = "500 Kbps";
+            baud = new Xml2CSharp.SupportedBaudRate
+            {
+                Value = "500 Kbps"
+            };
             if (eds.di.BaudRate_500 == true)
                 dev.Other.BaudRate.SupportedBaudRate.Add(baud);
 
-            baud = new Xml2CSharp.SupportedBaudRate();
-            baud.Value = "800 Kbps";
+            baud = new Xml2CSharp.SupportedBaudRate
+            {
+                Value = "800 Kbps"
+            };
             if (eds.di.BaudRate_800 == true)
                 dev.Other.BaudRate.SupportedBaudRate.Add(baud);
 
-            baud = new Xml2CSharp.SupportedBaudRate();
-            baud.Value = "1000 Kbps";
+            baud = new Xml2CSharp.SupportedBaudRate
+            {
+                Value = "1000 Kbps"
+            };
             if (eds.di.BaudRate_1000 == true)
                 dev.Other.BaudRate.SupportedBaudRate.Add(baud);
 
 
-            dev.Other.Capabilities = new Xml2CSharp.Capabilities();
-            dev.Other.Capabilities.CharacteristicsList = new Xml2CSharp.CharacteristicsList();
-            dev.Other.Capabilities.CharacteristicsList.Characteristic = new List<Xml2CSharp.Characteristic>();
+            dev.Other.Capabilities = new Xml2CSharp.Capabilities
+            {
+                CharacteristicsList = new Xml2CSharp.CharacteristicsList
+                {
+                    Characteristic = new List<Xml2CSharp.Characteristic>()
+                }
+            };
 
 
             dev.Other.Capabilities.CharacteristicsList.Characteristic.Add(makecharcteristic("SimpleBootUpSlave", eds.di.SimpleBootUpSlave.ToString()));
@@ -216,12 +265,18 @@ namespace libEDSsharp
 
             dev.Other.Capabilities.CharacteristicsList.Characteristic.Add(makecharcteristic("Granularity", eds.di.Granularity.ToString()));
 
-            dev.Other.DeviceIdentity = new Xml2CSharp.DeviceIdentity();
-            dev.Other.DeviceIdentity.ProductName = eds.di.ProductName;
-            dev.Other.DeviceIdentity.ProductNumber = eds.di.ProductNumber;
-            dev.Other.DeviceIdentity.ProductText = new Xml2CSharp.ProductText();
-            dev.Other.DeviceIdentity.ProductText.Description = new Xml2CSharp.Description();
-            dev.Other.DeviceIdentity.ProductText.Description.Text = eds.fi.Description;
+            dev.Other.DeviceIdentity = new Xml2CSharp.DeviceIdentity
+            {
+                ProductName = eds.di.ProductName,
+                ProductNumber = eds.di.ProductNumber,
+                ProductText = new Xml2CSharp.ProductText
+                {
+                    Description = new Xml2CSharp.Description
+                    {
+                        Text = eds.fi.Description
+                    }
+                }
+            };
 
 
             if (eds.dc.NodeId != 0)
@@ -230,25 +285,26 @@ namespace libEDSsharp
             dev.Other.DeviceIdentity.VendorName = eds.di.VendorName;
             dev.Other.DeviceIdentity.VendorNumber = eds.di.VendorNumber;
 
-            dev.Other.File = new File();
+            dev.Other.File = new File
+            {
+                FileName = System.IO.Path.GetFileName(eds.xmlfilename),
 
-            dev.Other.File.FileName = System.IO.Path.GetFileName(eds.xmlfilename); 
-            
-            dev.Other.File.FileCreationDate = eds.fi.CreationDateTime.ToString("MM-dd-yyyy");
-            dev.Other.File.FileCreationTime = eds.fi.CreationDateTime.ToString("h:mmtt");
-            dev.Other.File.FileCreator = eds.fi.CreatedBy;
+                FileCreationDate = eds.fi.CreationDateTime.ToString("MM-dd-yyyy"),
+                FileCreationTime = eds.fi.CreationDateTime.ToString("h:mmtt"),
+                FileCreator = eds.fi.CreatedBy,
 
-            dev.Other.File.FileModificationDate = eds.fi.ModificationDateTime.ToString("MM-dd-yyyy");
-            dev.Other.File.FileModificationTime = eds.fi.ModificationDateTime.ToString("h:mmtt");
-            dev.Other.File.FileModifedBy = eds.fi.ModifiedBy;
+                FileModificationDate = eds.fi.ModificationDateTime.ToString("MM-dd-yyyy"),
+                FileModificationTime = eds.fi.ModificationDateTime.ToString("h:mmtt"),
+                FileModifedBy = eds.fi.ModifiedBy,
 
-            dev.Other.File.FileVersion = eds.fi.FileVersion;
-            dev.Other.File.FileRevision = eds.fi.FileRevision;
+                FileVersion = eds.fi.FileVersion,
+                FileRevision = eds.fi.FileRevision,
 
-            dev.Other.File.ExportFolder = eds.fi.exportFolder;
-            dev.Other.File.EdsFile = eds.edsfilename;
+                ExportFolder = eds.fi.exportFolder,
+                EdsFile = eds.edsfilename
+            };
             //fixme dcffilename
-          
+
 
             return dev;
         }
@@ -256,14 +312,18 @@ namespace libEDSsharp
 
         public Xml2CSharp.Characteristic makecharcteristic(string name, string content)
         {
-            Xml2CSharp.Characteristic cl = new Xml2CSharp.Characteristic();
-
-            cl.CharacteristicName = new Xml2CSharp.CharacteristicName();
-            cl.CharacteristicContent = new Xml2CSharp.CharacteristicContent();
-            cl.CharacteristicContent.Label = new Xml2CSharp.Label();
-            cl.CharacteristicName.Label = new Xml2CSharp.Label();
-
-            cl.CharacteristicName.Label.Text = name;
+            Xml2CSharp.Characteristic cl = new Xml2CSharp.Characteristic
+            {
+                CharacteristicName = new Xml2CSharp.CharacteristicName(),
+                CharacteristicContent = new Xml2CSharp.CharacteristicContent
+                {
+                    Label = new Xml2CSharp.Label()
+                }
+            };
+            cl.CharacteristicName.Label = new Xml2CSharp.Label
+            {
+                Text = name
+            };
             cl.CharacteristicContent.Label.Text = content;
 
             return cl;
@@ -275,9 +335,11 @@ namespace libEDSsharp
 
             foreach (Xml2CSharp.CANopenObject coo in dev.CANopenObjectList.CANopenObject)
             {
-                ODentry entry = new ODentry();
-                entry.Index = Convert.ToUInt16(coo.Index, 16);
-                entry.parameter_name = coo.Name;
+                ODentry entry = new ODentry
+                {
+                    Index = Convert.ToUInt16(coo.Index, 16),
+                    parameter_name = coo.Name
+                };
 
                 if (coo.AccessType != null)
                 {
@@ -371,10 +433,11 @@ namespace libEDSsharp
                 foreach (Xml2CSharp.CANopenSubObject coosub in coo.CANopenSubObject)
                 {
 
-                    ODentry subentry = new ODentry();
-
-                    subentry.parameter_name = coosub.Name;
-                    subentry.Index = entry.Index;
+                    ODentry subentry = new ODentry
+                    {
+                        parameter_name = coosub.Name,
+                        Index = entry.Index
+                    };
 
                     if (coosub.AccessType != null)
                         subentry.accesstype = (EDSsharp.AccessType)Enum.Parse(typeof(EDSsharp.AccessType), coosub.AccessType);
@@ -473,16 +536,14 @@ namespace libEDSsharp
             }
 
 
-            bool boolout;
-            byte byteout;
 
-            if (keypairs.ContainsKey("SimpleBootUpSlave") && bool.TryParse(keypairs["SimpleBootUpSlave"], out boolout))
+            if (keypairs.ContainsKey("SimpleBootUpSlave") && bool.TryParse(keypairs["SimpleBootUpSlave"], out bool boolout))
                 eds.di.SimpleBootUpSlave = boolout;
             if (keypairs.ContainsKey("SimpleBootUpMaster") && bool.TryParse(keypairs["SimpleBootUpMaster"], out boolout))
                 eds.di.SimpleBootUpMaster = boolout;
             if (keypairs.ContainsKey("DynamicChannelsSupported") && bool.TryParse(keypairs["DynamicChannelsSupported"], out boolout))
                 eds.di.DynamicChannelsSupported = boolout;
-            if (keypairs.ContainsKey("CompactPDO") && byte.TryParse(keypairs["CompactPDO"], out byteout))
+            if (keypairs.ContainsKey("CompactPDO") && byte.TryParse(keypairs["CompactPDO"], out byte byteout))
                 eds.di.CompactPDO = byteout;
             if (keypairs.ContainsKey("GroupMessaging") && bool.TryParse(keypairs["GroupMessaging"], out boolout))
                 eds.di.GroupMessaging = boolout;
@@ -563,7 +624,7 @@ namespace libEDSsharp
         }
 
 
-       
+
     }
 
 }

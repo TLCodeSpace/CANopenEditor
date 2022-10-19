@@ -45,8 +45,7 @@ namespace ODEditor
         private void button_save_Click(object sender, EventArgs e)
         {
 
-            ExporterFactory.Exporter exporter;
-            Enum.TryParse<ExporterFactory.Exporter>(comboBox_exporter.SelectedValue.ToString(), out exporter);
+            Enum.TryParse<ExporterFactory.Exporter>(comboBox_exporter.SelectedValue.ToString(), out ExporterFactory.Exporter exporter);
             Properties.Settings.Default.ExporterType = (int)exporter;
 
             UInt32 mask = 0xFFE0;

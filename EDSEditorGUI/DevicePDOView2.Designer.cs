@@ -75,7 +75,7 @@
             this.button_addPDO.TabIndex = 15;
             this.button_addPDO.Text = "Add new PDO";
             this.button_addPDO.UseVisualStyleBackColor = true;
-            this.button_addPDO.Click += new System.EventHandler(this.button_addPDO_Click);
+            this.button_addPDO.Click += new System.EventHandler(this.Button_addPDO_Click);
             // 
             // groupBox1
             // 
@@ -129,7 +129,7 @@
             this.checkBox_invalidpdo.TabIndex = 2;
             this.checkBox_invalidpdo.Text = "Invalid";
             this.checkBox_invalidpdo.UseVisualStyleBackColor = true;
-            this.checkBox_invalidpdo.CheckedChanged += new System.EventHandler(this.checkBox_invalidpdo_CheckedChanged);
+            this.checkBox_invalidpdo.CheckedChanged += new System.EventHandler(this.CheckBox_invalidpdo_CheckedChanged);
             // 
             // button_savepdochanges
             // 
@@ -141,7 +141,7 @@
             this.button_savepdochanges.TabIndex = 8;
             this.button_savepdochanges.Text = "Save ";
             this.button_savepdochanges.UseVisualStyleBackColor = true;
-            this.button_savepdochanges.Click += new System.EventHandler(this.button_savepdochanges_Click_1);
+            this.button_savepdochanges.Click += new System.EventHandler(this.Button_savepdochanges_Click_1);
             // 
             // button_deletePDO
             // 
@@ -153,7 +153,7 @@
             this.button_deletePDO.TabIndex = 7;
             this.button_deletePDO.Text = "Delete PDO";
             this.button_deletePDO.UseVisualStyleBackColor = true;
-            this.button_deletePDO.Click += new System.EventHandler(this.button_deletePDO_Click);
+            this.button_deletePDO.Click += new System.EventHandler(this.Button_deletePDO_Click);
             // 
             // textBox_slot
             // 
@@ -277,7 +277,7 @@
             this.listView_TXPDO.TabIndex = 17;
             this.listView_TXPDO.UseCompatibleStateImageBehavior = false;
             this.listView_TXPDO.View = System.Windows.Forms.View.Details;
-            this.listView_TXPDO.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.listView_TXPDO_ItemDrag);
+            this.listView_TXPDO.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.ListView_TXPDO_ItemDrag);
             // 
             // columnHeader13
             // 
@@ -317,9 +317,9 @@
             this.grid1.TabIndex = 21;
             this.grid1.TabStop = true;
             this.grid1.ToolTipText = "";
-            this.grid1.DragDrop += new System.Windows.Forms.DragEventHandler(this.grid1_DragDrop);
-            this.grid1.DragEnter += new System.Windows.Forms.DragEventHandler(this.grid1_DragEnter);
-            this.grid1.DragOver += new System.Windows.Forms.DragEventHandler(this.grid1_DragOver);
+            this.grid1.DragDrop += new System.Windows.Forms.DragEventHandler(this.Grid1_DragDrop);
+            this.grid1.DragEnter += new System.Windows.Forms.DragEventHandler(this.Grid1_DragEnter);
+            this.grid1.DragOver += new System.Windows.Forms.DragEventHandler(this.Grid1_DragOver);
             // 
             // button_down
             // 
@@ -330,7 +330,7 @@
             this.button_down.TabIndex = 22;
             this.button_down.Text = "Zoom Out";
             this.button_down.UseVisualStyleBackColor = true;
-            this.button_down.Click += new System.EventHandler(this.button_down_Click);
+            this.button_down.Click += new System.EventHandler(this.Button_down_Click);
             // 
             // button_up
             // 
@@ -341,7 +341,7 @@
             this.button_up.TabIndex = 23;
             this.button_up.Text = "Zoom In";
             this.button_up.UseVisualStyleBackColor = true;
-            this.button_up.Click += new System.EventHandler(this.button_up_Click);
+            this.button_up.Click += new System.EventHandler(this.Button_up_Click);
             // 
             // contextMenuStrip_removeitem
             // 

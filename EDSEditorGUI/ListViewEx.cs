@@ -26,7 +26,7 @@ namespace CustomListView
     {
 
 
-        public delegate void ComboBoxIndexChanged(int row, int col,String Text);
+        public delegate void ComboBoxIndexChanged(int row, int col, String Text);
         public event ComboBoxIndexChanged onComboBoxIndexChanged;
 
         #region SubItem Class
@@ -101,12 +101,12 @@ namespace CustomListView
         /// <summary>
         /// Textbox to display in the editable cells
         /// </summary>
-        private TextBox textBox = new TextBox();
+        private TextBox textBox = new();
 
         /// <summary>
         /// Combo box to display in the associated cells
         /// </summary>
-        private ComboBox combo = new ComboBox();
+        private ComboBox combo = new();
 
         /// <summary>
         /// This is a flag variable. This is used to determine whether
@@ -117,7 +117,7 @@ namespace CustomListView
         /// <summary>
         /// To store, subitems that contains comboboxes and text boxes
         /// </summary>
-        private Hashtable customCells = new Hashtable();
+        private readonly Hashtable customCells = new();
         #endregion
 
         #region Methods
@@ -136,14 +136,18 @@ namespace CustomListView
         private void InitializeComponent()
         {
             // Text box
-            this.textBox = new TextBox();
-            this.textBox.Visible = false;
+            this.textBox = new TextBox
+            {
+                Visible = false
+            };
             textBox.BorderStyle = BorderStyle.FixedSingle;
             this.textBox.Leave += new EventHandler(textBox_Leave);
 
             // Combo box
-            this.combo = new ComboBox();
-            this.combo.Visible = false;
+            this.combo = new ComboBox
+            {
+                Visible = false
+            };
             this.Controls.Add(this.textBox);
             this.Controls.Add(this.combo);
             this.combo.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -159,7 +163,7 @@ namespace CustomListView
         private Rectangle GetSubItemRect(Point clickPoint)
         {
             // Create output param
-            Rectangle subItemRect = new Rectangle();
+            Rectangle subItemRect = new();
 
             // Reset the indices
             this.row = this.col = -1;
@@ -173,7 +177,7 @@ namespace CustomListView
                 {
 
                     subItemRect = item.SubItems[index].Bounds;
- 
+
                     this.row = item.Index;
                     // Add 1 because of the presence of above condition
                     this.col = index + 1;
@@ -193,9 +197,9 @@ namespace CustomListView
                             // Add 1 because of the presence of above condition
                             this.col = index + 0;
                             break;
-                        }    
+                        }
                     }
-                    
+
                 }
             }
 
@@ -257,7 +261,7 @@ namespace CustomListView
         {
             try
             {
-                StringCollection param = new StringCollection();
+                StringCollection param = new();
                 param.AddRange(data);
                 this.AddComboBoxCell(row, col, param);
             }
@@ -374,7 +378,7 @@ namespace CustomListView
                 if (this.row != -1 && this.col != -1)
                 {
 
- 
+
                     // Check whether combobox or text box is set for the current cell
                     SubItem cell = GetKey(new SubItem(this.row, this.col));
 
@@ -383,7 +387,7 @@ namespace CustomListView
                         // Set the size of the control(combobox/editbox)
                         // This should be composed of the height of the current items and
                         // width of the current column
-                        Size sz = new Size(this.Columns[col].Width, Items[row].Bounds.Height);
+                        Size sz = new(this.Columns[col].Width, Items[row].Bounds.Height);
 
                         // Determine the location where the control(combobox/editbox) to be placed
                         Point location = col == 0 ? new Point(0, rect.Top) : new Point(rect.Left, rect.Top);
@@ -404,7 +408,7 @@ namespace CustomListView
             }
             catch (Exception ex)
             {
-                Console.WriteLine("EXCEPTION !!"+ex.ToString());
+                Console.WriteLine("EXCEPTION !!" + ex.ToString());
                 Trace.WriteLine(ex.ToString());
             }
         }
@@ -563,7 +567,7 @@ namespace CustomListView
                     this.Items[row].SubItems[col].Text = this.combo.Text;
                     this.combo.Visible = !this.hideComboAfterSelChange;
 
-                    if (noevent==false && onComboBoxIndexChanged != null)
+                    if (noevent == false && onComboBoxIndexChanged != null)
                         onComboBoxIndexChanged(row, col, combo.Text);
                 }
             }

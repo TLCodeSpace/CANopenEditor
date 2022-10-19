@@ -81,7 +81,7 @@ namespace ODEditor
             textBox_mdFileName.Text = Path.GetFileName(eds.mdfilename);
 
             //DCF support
-            if (eds.dc!=null)
+            if (eds.dc != null)
             {
                 textBox_concretenodeid.Text = eds.dc.NodeId.ToString();
                 textBox_nodename.Text = eds.dc.NodeName;
@@ -125,7 +125,7 @@ namespace ODEditor
                 eds.di.LSS_Master = checkBox_lssMaster.Checked;
 
                 doUpdatePDOs();
-               
+
                 //These are read only and auto calculated 
                 //textBox_rxpdos.Text = eds.di.NrOfRXPDO.ToString();
                 //textBox_txpdos.Text = eds.di.NrOfTXPDO.ToString();

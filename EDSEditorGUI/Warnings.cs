@@ -17,9 +17,9 @@ namespace ODEditor
         {
             InitializeComponent();
 
-            foreach(string s in Warnings.warning_list)
+            foreach (string s in Warnings.warning_list)
             {
-                textBox1.AppendText(s+"\r\n");
+                textBox1.AppendText(s + "\r\n");
             }
         }
 

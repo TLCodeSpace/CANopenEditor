@@ -31,8 +31,10 @@ namespace libEDSsharp
         public void gennetpdodoc(string filepath, List<EDSsharp> network)
         {
 
-            file = new StreamWriter(filepath, false);
-            file.NewLine = "\n";
+            file = new StreamWriter(filepath, false)
+            {
+                NewLine = "\n"
+            };
 
             file.Write("<!DOCTYPE html><html><head><meta charset=\"utf-8\"><link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\" /> <title>Network PDO report</title></head><body>");
 
@@ -77,10 +79,9 @@ namespace libEDSsharp
                             UInt16 inhibit = 0;
                             byte type = 0;
 
-                            bool nodeidpresent;
 
                             if (kvp.Value.Containssubindex(1))
-                                TXCOB = eds.GetNodeID(kvp.Value.Getsubobject(1).defaultvalue, out nodeidpresent);
+                                TXCOB = eds.GetNodeID(kvp.Value.Getsubobject(1).defaultvalue, out bool nodeidpresent);
 
                             if (kvp.Value.Containssubindex(2))
                                 type = EDSsharp.ConvertToByte(kvp.Value.Getsubobject(2).defaultvalue);
@@ -190,8 +191,7 @@ namespace libEDSsharp
                                             {
                                                 if (eds2.ods.ContainsKey((UInt16)(kvp2.Key + 0x200)))
                                                 {
-                                                    bool nodeidpresent2;
-                                                    UInt32 RXCOB = eds2.GetNodeID(kvp2.Value.Getsubobjectdefaultvalue(1), out nodeidpresent2);
+                                                    UInt32 RXCOB = eds2.GetNodeID(kvp2.Value.Getsubobjectdefaultvalue(1), out bool nodeidpresent2);
                                                     if (RXCOB == TXCOB)
                                                     {
 
@@ -289,7 +289,7 @@ namespace libEDSsharp
                                             }
                                         }
 
-                                      
+
                                     }
                                 }
 

@@ -21,7 +21,7 @@ namespace libEDSsharp
 
         public static UInt32 warning_mask = 0xffff;
 
-        public static void AddWarning(string warning,warning_class c = warning_class.WARNING_GENERIC)
+        public static void AddWarning(string warning, warning_class c = warning_class.WARNING_GENERIC)
         {
             if (((UInt32)c & warning_mask) != 0)
             {
@@ -30,6 +30,6 @@ namespace libEDSsharp
         }
     }
 
-   
+
 
 }

@@ -15,7 +15,7 @@ namespace libEDSsharp
 
         public static string ToHexString(this UInt16 val)
         {
-            return String.Format("0x{0:x}",val);
+            return String.Format("0x{0:x}", val);
         }
 
         public static string ToHexString(this UInt32 val)
