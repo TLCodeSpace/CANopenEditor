@@ -26,8 +26,7 @@ namespace Tests
 
 
             //fill it with some dummy entries
-            ODentry od;
-            tryGetODEntry(0x0002, out od);
+            tryGetODEntry(0x0002, out ODentry od);
             slot.Mapping.Add(od);
 
             tryGetODEntry(0x0003, out od);
@@ -36,19 +35,17 @@ namespace Tests
             tryGetODEntry(0x0004, out od);
             slot.Mapping.Add(od);
 
-            pdo.buildmappingsfromlists();
+            pdo.Buildmappingsfromlists();
 
             //check configuration object exists
-            ODentry comparamOD;
 
-            if (!tryGetODEntry(0x1800, out comparamOD))
+            if (!tryGetODEntry(0x1800, out ODentry comparamOD))
             {
                 throw new Exception("Communication paramaters not generated");
             }
 
-            ODentry mappingOD;
 
-            if (!tryGetODEntry(0x1a00, out mappingOD))
+            if (!tryGetODEntry(0x1a00, out ODentry mappingOD))
             {
                 throw new Exception("Mapping paramaters not generated");
             }
@@ -105,8 +102,7 @@ namespace Tests
 
 
             //fill it with some dummy entries
-            ODentry od;
-            tryGetODEntry(0x0002, out od);
+            tryGetODEntry(0x0002, out ODentry od);
             slot.Mapping.Add(od);
 
             tryGetODEntry(0x0003, out od);
@@ -115,19 +111,17 @@ namespace Tests
             tryGetODEntry(0x0004, out od);
             slot.Mapping.Add(od);
 
-            pdo.buildmappingsfromlists();
+            pdo.Buildmappingsfromlists();
 
             //check configuration object exists
-            ODentry comparamOD;
 
-            if (!tryGetODEntry(0x1400, out comparamOD))
+            if (!tryGetODEntry(0x1400, out ODentry comparamOD))
             {
                 throw new Exception("Communication paramaters not generated");
             }
 
-            ODentry mappingOD;
 
-            if (!tryGetODEntry(0x1600, out mappingOD))
+            if (!tryGetODEntry(0x1600, out ODentry mappingOD))
             {
                 throw new Exception("Mapping paramaters not generated");
             }
