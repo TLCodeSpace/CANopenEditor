@@ -68,7 +68,7 @@ namespace libEDSsharp
                         }
                     }
 
-                    if (od.objecttype == ObjectType.REC && od.accesstype == EDSsharp.AccessType.UNKNOWN)
+                    if (od.objecttype == ObjectType.RECORD && od.accesstype == EDSsharp.AccessType.UNKNOWN)
                     {
                         ODentry sub = od.Getsubobject(1);
                         if (sub != null)
@@ -99,7 +99,7 @@ namespace libEDSsharp
                         Text = od.Description
                     };
 
-                    //if (od.objecttype == ObjectType.ARRAY || od.objecttype == ObjectType.REC)
+                    //if (od.objecttype == ObjectType.ARRAY || od.objecttype == ObjectType.RECORD)
                     {
                         coo.SubNumber = od.Nosubindexes.ToString(); //-1?? //check me 
                         coo.CANopenSubObject = new List<Xml2CSharp.CANopenSubObject>();

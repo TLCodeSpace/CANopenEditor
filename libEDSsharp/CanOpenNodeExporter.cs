@@ -52,7 +52,12 @@ namespace libEDSsharp
         ODentry maxRXmappingsOD = null;
         ODentry maxTXmappingsOD = null;
 
+<<<<<<< HEAD
         public void PrepareCanOpenNames()
+=======
+
+        public void prepareCanOpenNames()
+>>>>>>> bugfix
         {
             acceptable_canopen_names.Add(0x101800, "identity");
 
@@ -115,7 +120,7 @@ namespace libEDSsharp
 
             for (UInt16 idx = 0x1800; idx < 0x1900; idx++)
             {
-                if (eds.ods.ContainsKey(idx))
+                if (ObjectActive(idx))
                 {
                     ODentry od = eds.ods[idx];
 
@@ -159,7 +164,20 @@ namespace libEDSsharp
             }
         }
 
+<<<<<<< HEAD
         protected void PrewalkArrays()
+=======
+        public bool ObjectActive(UInt16 index)
+        {
+            if (eds.ods.ContainsKey(index))
+            {
+                return !eds.ods[index].prop.CO_disabled;
+            }
+            else return false;
+        }
+
+        protected void prewalkArrays()
+>>>>>>> bugfix
         {
 
             foreach (KeyValuePair<UInt16, ODentry> kvp in eds.ods)
@@ -237,7 +255,11 @@ namespace libEDSsharp
 
             for (ushort x = 0x1600; x < 0x1800; x++)
             {
+<<<<<<< HEAD
                 if (eds.ods.ContainsKey(x))
+=======
+                if(ObjectActive(x))
+>>>>>>> bugfix
                 {
                     byte maxcount = EDSsharp.ConvertToByte(eds.ods[x].subobjects[0].defaultvalue);
 
@@ -251,7 +273,7 @@ namespace libEDSsharp
 
             for (ushort x = 0x1a00; x < 0x1c00; x++)
             {
-                if (eds.ods.ContainsKey(x))
+                if (ObjectActive(x))
                 {
                     byte maxcount = EDSsharp.ConvertToByte(eds.ods[x].subobjects[0].defaultvalue);
 
@@ -323,8 +345,13 @@ namespace libEDSsharp
                 switch (od.objecttype)
                 {
 
+<<<<<<< HEAD
                     case ObjectType.REC:
                         objecttypewords = String.Format("OD_{0}_t", Make_cname(od.parameter_name, od));
+=======
+                    case ObjectType.RECORD:
+                        objecttypewords = String.Format("OD_{0}_t", make_cname(od.parameter_name,od));
+>>>>>>> bugfix
                         break;
                     case ObjectType.ARRAY:
                         objecttypewords = t.ToString(); //this case is handled by the logic in eds.getdatatype();
@@ -348,7 +375,7 @@ namespace libEDSsharp
                     //Don't put sub indexes on record type in h file unless there are multiples of the same
                     //in which case its not handled here, we need a special case for the predefined special
                     //values that arrayspecial() checks for, to generate 1 element arrays if needed
-                    if (od.objecttype == ObjectType.REC)
+                    if (od.objecttype == ObjectType.RECORD)
                     {
                         if (Arrayspecial(od.Index, true))
                         {
@@ -498,7 +525,11 @@ namespace libEDSsharp
             file.WriteLine(string.Format("  #define CO_NO_TPDO                     {0}   //Associated objects: 18xx, 1Axx", noTXpdos));
 
             bool ismaster = false;
+<<<<<<< HEAD
             if (eds.ods.ContainsKey(0x1f80))
+=======
+            if(ObjectActive(0x1f80))
+>>>>>>> bugfix
             {
                 ODentry master = eds.ods[0x1f80];
 
@@ -543,7 +574,7 @@ namespace libEDSsharp
                 /* make sure, we have all storage groups */
                 eds.CO_storageGroups.Add(od.prop.CO_storageGroup);
 
-                if (od.objecttype != ObjectType.REC)
+                if (od.objecttype != ObjectType.RECORD)
                     continue;
 
                 string structname = String.Format("OD_{0}_t", Make_cname(od.parameter_name, od));
@@ -635,11 +666,19 @@ namespace libEDSsharp
                         }
                         break;
 
+<<<<<<< HEAD
                     case ObjectType.ARRAY:
                     case ObjectType.REC:
                         {
                             file.WriteLine(string.Format("/*{0:X4} */", od.Index));
                             file.WriteLine(string.Format("        #define {0,-51} 0x{1:X4}", string.Format("OD_{0:X4}_{1}", od.Index, Make_cname(od.parameter_name, od)), od.Index, t.ToString()));
+=======
+                case ObjectType.ARRAY:
+                case ObjectType.RECORD:
+                    {
+                        file.WriteLine(string.Format("/*{0:X4} */", od.Index));
+                        file.WriteLine(string.Format("        #define {0,-51} 0x{1:X4}", string.Format("OD_{0:X4}_{1}", od.Index, make_cname(od.parameter_name,od)), od.Index, t.ToString()));
+>>>>>>> bugfix
 
                             file.WriteLine("");
 
@@ -806,7 +845,7 @@ namespace libEDSsharp
                         }
                         break;
 
-                    case ObjectType.REC:
+                    case ObjectType.RECORD:
                         {
                             string rectype = Make_cname(od.parameter_name, od);
 
@@ -939,8 +978,13 @@ const CO_OD_entry_t CO_OD[CO_OD_NoOfElements] = {
 
             byte flags = Getflags(od);
 
+<<<<<<< HEAD
             int datasize = od.objecttype == ObjectType.REC ? 0 : (int)Math.Ceiling((double)od.Sizeofdatatype() / (double)8.0);
 
+=======
+            int datasize = od.objecttype == ObjectType.RECORD ? 0 : (int)Math.Ceiling((double)od.Sizeofdatatype() / (double)8.0);
+  
+>>>>>>> bugfix
             string array = "";
 
             //only needed for array objects
@@ -962,7 +1006,7 @@ const CO_OD_entry_t CO_OD[CO_OD_NoOfElements] = {
 
             //Arrays and Recs have 1 less subindex than actually present in the od.subobjects
             int nosubindexs = od.Nosubindexes;
-            if (od.objecttype == ObjectType.ARRAY || od.objecttype == ObjectType.REC)
+            if (od.objecttype == ObjectType.ARRAY || od.objecttype == ObjectType.RECORD)
             {
                 if (nosubindexs > 0)
                     nosubindexs--;
@@ -991,7 +1035,7 @@ const CO_OD_entry_t CO_OD[CO_OD_NoOfElements] = {
 
             string pdata; //CO_OD_entry_t pData generator
 
-            if (od.objecttype == ObjectType.REC)
+            if (od.objecttype == ObjectType.RECORD)
             {
 
                 pdata = string.Format("&OD_record{0:X4}", od.Index);
@@ -1028,7 +1072,7 @@ const CO_OD_entry_t CO_OD[CO_OD_NoOfElements] = {
             byte mapping = 0; //mapping flags, if pdo is enabled
 
             //aways return 0 for REC objects as CO_OD_getDataPointer() uses this to pickup the details
-            if (od.objecttype == ObjectType.REC)
+            if (od.objecttype == ObjectType.RECORD)
                 return 0;
 
             byte flags;
@@ -1401,7 +1445,7 @@ const CO_OD_entry_t CO_OD[CO_OD_NoOfElements] = {
             {
                 ODentry od = kvp.Value;
 
-                if (od.objecttype != ObjectType.REC)
+                if (od.objecttype != ObjectType.RECORD)
                     continue;
 
                 if (od.prop.CO_disabled == true)
@@ -1498,13 +1542,13 @@ const CO_OD_entry_t CO_OD[CO_OD_NoOfElements] = {
 
             //check the SYNC feature
             int checkfeature = 0;
-            if (eds.ods.ContainsKey(0x1005))
+            if (ObjectActive(0x1005))
                 checkfeature++;
-            if (eds.ods.ContainsKey(0x1006))
+            if (ObjectActive(0x1006))
                 checkfeature++;
-            if (eds.ods.ContainsKey(0x1007))
+            if (ObjectActive(0x1007))
                 checkfeature++;
-            if (eds.ods.ContainsKey(0x1019))
+            if (ObjectActive(0x1019))
                 checkfeature++;
             if (checkfeature == 4)
             {
@@ -1517,11 +1561,11 @@ const CO_OD_entry_t CO_OD[CO_OD_NoOfElements] = {
 
             //EMCY
             checkfeature = 0;
-            if (eds.ods.ContainsKey(0x1003))
+            if (ObjectActive(0x1003))
                 checkfeature++;
-            if (eds.ods.ContainsKey(0x1014))
+            if (ObjectActive(0x1014))
                 checkfeature++;
-            if (eds.ods.ContainsKey(0x1015))
+            if (ObjectActive(0x1015))
                 checkfeature++;
             if (checkfeature == 3)
             {
@@ -1533,7 +1577,7 @@ const CO_OD_entry_t CO_OD[CO_OD_NoOfElements] = {
             }
 
             //TIME
-            if (eds.ods.ContainsKey(0x1012))
+            if (ObjectActive(0x1012))
             {
                 noTIME = 1;
             }
@@ -1544,14 +1588,14 @@ const CO_OD_entry_t CO_OD[CO_OD_NoOfElements] = {
 
             //NMT CLIENT
             checkfeature = 0;
-            if (eds.ods.ContainsKey(0x1f80))
-                checkfeature++;
-            if (eds.ods.ContainsKey(0x1029))
-                checkfeature++;
-            if (eds.ods.ContainsKey(0x1017))
-                checkfeature++;
-            if (eds.ods.ContainsKey(0x1001))
-                checkfeature++;
+            if (ObjectActive(0x1f80))
+                checkfeature ++;
+            if (ObjectActive(0x1029))
+                checkfeature ++;
+            if (ObjectActive(0x1017))
+                checkfeature ++;
+            if (ObjectActive(0x1001))
+                checkfeature ++;
             if (checkfeature == 4)
             {
                 //NMT Client is not optional

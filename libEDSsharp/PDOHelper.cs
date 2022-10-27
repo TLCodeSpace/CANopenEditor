@@ -305,6 +305,7 @@ namespace libEDSsharp
             foreach (PDOSlot slot in pdoslots)
             {
 
+<<<<<<< HEAD
                 ODentry config = new ODentry
                 {
                     Index = slot.ConfigurationIndex,
@@ -319,6 +320,18 @@ namespace libEDSsharp
                     accesstype = EDSsharp.AccessType.ro
                 };
                 config.addsubobject(0x00, sub);
+=======
+                ODentry config = new ODentry();
+                config.Index = slot.ConfigurationIndex;
+                config.datatype = DataType.PDO_COMMUNICATION_PARAMETER;
+                config.objecttype = ObjectType.RECORD;
+
+                ODentry sub = new ODentry("max sub-index", (ushort)slot.ConfigurationIndex, 0);
+                sub.defaultvalue = "6";
+                sub.datatype = DataType.UNSIGNED8;
+                sub.accesstype = EDSsharp.AccessType.ro;
+                config.addsubobject(0x00,sub);
+>>>>>>> bugfix
 
                 config.accesstype = slot.configAccessType;
                 config.prop.CO_storageGroup = slot.configloc;
@@ -409,12 +422,19 @@ namespace libEDSsharp
 
                 eds.ods.Add(slot.ConfigurationIndex, config);
 
+<<<<<<< HEAD
                 ODentry mapping = new ODentry
                 {
                     Index = slot.MappingIndex,
                     datatype = DataType.PDO_MAPPING,
                     objecttype = ObjectType.REC
                 };
+=======
+                ODentry mapping = new ODentry();
+                mapping.Index = slot.MappingIndex;
+                mapping.datatype = DataType.PDO_MAPPING;
+                mapping.objecttype = ObjectType.RECORD;
+>>>>>>> bugfix
 
                 if (slot.IsTXPDO())
                     mapping.parameter_name = "TPDO mapping parameter";
