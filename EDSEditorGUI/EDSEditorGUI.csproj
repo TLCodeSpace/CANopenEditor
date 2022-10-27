@@ -69,12 +69,7 @@
     <None Update="Profiles\DS301_profile.xpd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-<<<<<<< HEAD
     <None Update="Properties\Settings.settings">
-=======
-    <None Include="Profiles\DS401_profile.xpd" />
-    <None Include="Properties\Settings.settings">
->>>>>>> bugfix
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>

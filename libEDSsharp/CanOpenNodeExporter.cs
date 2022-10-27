@@ -52,12 +52,7 @@ namespace libEDSsharp
         ODentry maxRXmappingsOD = null;
         ODentry maxTXmappingsOD = null;
 
-<<<<<<< HEAD
         public void PrepareCanOpenNames()
-=======
-
-        public void prepareCanOpenNames()
->>>>>>> bugfix
         {
             acceptable_canopen_names.Add(0x101800, "identity");
 
@@ -164,9 +159,6 @@ namespace libEDSsharp
             }
         }
 
-<<<<<<< HEAD
-        protected void PrewalkArrays()
-=======
         public bool ObjectActive(UInt16 index)
         {
             if (eds.ods.ContainsKey(index))
@@ -176,8 +168,7 @@ namespace libEDSsharp
             else return false;
         }
 
-        protected void prewalkArrays()
->>>>>>> bugfix
+        protected void PrewalkArrays()
         {
 
             foreach (KeyValuePair<UInt16, ODentry> kvp in eds.ods)
@@ -255,11 +246,7 @@ namespace libEDSsharp
 
             for (ushort x = 0x1600; x < 0x1800; x++)
             {
-<<<<<<< HEAD
-                if (eds.ods.ContainsKey(x))
-=======
                 if(ObjectActive(x))
->>>>>>> bugfix
                 {
                     byte maxcount = EDSsharp.ConvertToByte(eds.ods[x].subobjects[0].defaultvalue);
 
@@ -345,13 +332,8 @@ namespace libEDSsharp
                 switch (od.objecttype)
                 {
 
-<<<<<<< HEAD
-                    case ObjectType.REC:
-                        objecttypewords = String.Format("OD_{0}_t", Make_cname(od.parameter_name, od));
-=======
                     case ObjectType.RECORD:
-                        objecttypewords = String.Format("OD_{0}_t", make_cname(od.parameter_name,od));
->>>>>>> bugfix
+                        objecttypewords = String.Format("OD_{0}_t", Make_cname(od.parameter_name,od));
                         break;
                     case ObjectType.ARRAY:
                         objecttypewords = t.ToString(); //this case is handled by the logic in eds.getdatatype();
@@ -525,11 +507,8 @@ namespace libEDSsharp
             file.WriteLine(string.Format("  #define CO_NO_TPDO                     {0}   //Associated objects: 18xx, 1Axx", noTXpdos));
 
             bool ismaster = false;
-<<<<<<< HEAD
-            if (eds.ods.ContainsKey(0x1f80))
-=======
+
             if(ObjectActive(0x1f80))
->>>>>>> bugfix
             {
                 ODentry master = eds.ods[0x1f80];
 
@@ -666,20 +645,11 @@ namespace libEDSsharp
                         }
                         break;
 
-<<<<<<< HEAD
                     case ObjectType.ARRAY:
-                    case ObjectType.REC:
+                    case ObjectType.RECORD:
                         {
                             file.WriteLine(string.Format("/*{0:X4} */", od.Index));
                             file.WriteLine(string.Format("        #define {0,-51} 0x{1:X4}", string.Format("OD_{0:X4}_{1}", od.Index, Make_cname(od.parameter_name, od)), od.Index, t.ToString()));
-=======
-                case ObjectType.ARRAY:
-                case ObjectType.RECORD:
-                    {
-                        file.WriteLine(string.Format("/*{0:X4} */", od.Index));
-                        file.WriteLine(string.Format("        #define {0,-51} 0x{1:X4}", string.Format("OD_{0:X4}_{1}", od.Index, make_cname(od.parameter_name,od)), od.Index, t.ToString()));
->>>>>>> bugfix
-
                             file.WriteLine("");
 
                             //sub indexes
@@ -978,13 +948,8 @@ const CO_OD_entry_t CO_OD[CO_OD_NoOfElements] = {
 
             byte flags = Getflags(od);
 
-<<<<<<< HEAD
-            int datasize = od.objecttype == ObjectType.REC ? 0 : (int)Math.Ceiling((double)od.Sizeofdatatype() / (double)8.0);
-
-=======
             int datasize = od.objecttype == ObjectType.RECORD ? 0 : (int)Math.Ceiling((double)od.Sizeofdatatype() / (double)8.0);
-  
->>>>>>> bugfix
+
             string array = "";
 
             //only needed for array objects

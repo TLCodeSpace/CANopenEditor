@@ -25,7 +25,6 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Reflection;
 using CanOpenXSD_1_1;
-using System.Runtime.Remoting.Messaging;
 
 namespace libEDSsharp
 {
@@ -1357,12 +1356,8 @@ namespace libEDSsharp
 
             ODentry newOd;
 
-<<<<<<< HEAD
-            if ((baseObject.Nosubindexes == 0) && ((baseObject.objecttype == ObjectType.ARRAY) || (baseObject.objecttype == ObjectType.REC)))
-            {
-=======
             if ((baseObject.Nosubindexes == 0) && ((baseObject.objecttype == ObjectType.ARRAY) || (baseObject.objecttype == ObjectType.RECORD))) {
->>>>>>> bugfix
+
                 baseObject.subobjects.Add(0, new ODentry
                 {
                     parent = baseObject,
@@ -2285,18 +2280,9 @@ namespace libEDSsharp
                         if (pdo == true)
                             od.PDOtype = PDOMappingType.optional;
                     }
-
-<<<<<<< HEAD
                 }
-
-
-                if (od.objecttype == ObjectType.REC || od.objecttype == ObjectType.ARRAY || od.objecttype == ObjectType.DEFSTRUCT)
-=======
-                }
-
               
                 if(od.objecttype == ObjectType.RECORD|| od.objecttype == ObjectType.ARRAY || od.objecttype == ObjectType.DEFSTRUCT)
->>>>>>> bugfix
                 {
 
                     if (od.CompactSubObj != 0)
@@ -2940,19 +2926,10 @@ namespace libEDSsharp
                     input = input.Replace(" ", "");
                     return Convert.ToUInt32(input.Trim(), Getbase(input));
                 }
-<<<<<<< HEAD
-
-                input = input.Replace("$NODEID", String.Format("0x{0}", dc.NodeId));
-
-                string[] bits = input.Split('+');
-
-                if (bits.Length == 1)
-=======
 
                 input = input.Replace("$NODEID", dc.NodeId.ToString()); // dc.NodeID is decimal
                 string[] bits = Array.ConvertAll(input.Split('+'), p => p.Trim()); // Split and Trim the value
                 if (bits.Length==1)
->>>>>>> bugfix
                 {
                     //nothing to parse here just return the value
                     return Convert.ToUInt32(input, Getbase(input));
