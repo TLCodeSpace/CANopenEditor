@@ -27,8 +27,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.IO;
 
-
-
 namespace libEDSsharp
 {
 
@@ -52,7 +50,6 @@ namespace libEDSsharp
         private byte maxTXmappingsize = 0;
         ODentry maxRXmappingsOD=null;
         ODentry maxTXmappingsOD=null;
-
 
         public void prepareCanOpenNames()
         {
@@ -394,7 +391,7 @@ namespace libEDSsharp
                             specialarraylength = string.Format("[{0}]", maxlength);
                         }
 
-                        sb.AppendLine($"/*{od.Index:X4}      */ {objecttypewords,-15} {make_cname(od.parameter_name,od)}{specialarraylength}[{od.Nosubindexes - 1}];");
+                        sb.AppendLine($"/*{od.Index:X4}      */ {objecttypewords,-15} {make_cname(od.parameter_name,od)}[{od.Nosubindexes - 1}]{specialarraylength};");
                     }
                 }
             }
@@ -1557,13 +1554,13 @@ const CO_OD_entry_t CO_OD[CO_OD_NoOfElements] = {
             //NMT CLIENT
             checkfeature = 0;
             if (ObjectActive(0x1f80))
-                checkfeature ++;
+                checkfeature++;
             if (ObjectActive(0x1029))
-                checkfeature ++;
+                checkfeature++;
             if (ObjectActive(0x1017))
-                checkfeature ++;
+                checkfeature++;
             if (ObjectActive(0x1001))
-                checkfeature ++;
+                checkfeature++;
             if (checkfeature == 4)
             {
                 //NMT Client is not optional
