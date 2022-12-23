@@ -4,6 +4,27 @@
         <name>libEDSsharp</name>
     </assembly>
     <members>
+        <member name="M:libEDSsharp.CanOpenNodeExporter.Getflags(libEDSsharp.ODentry)">
+            <summary>
+            Get the CANopenNode specific flags, these flags are used internally in CANopenNode to determine details about the object variable
+            </summary>
+            <param name="od">An odentry to access</param>
+            <returns>byte containing the flag value</returns>
+        </member>
+        <member name="M:libEDSsharp.CanOpenNodeExporter.Export_record_types">
+            <summary>
+            Export the record type objects in the CO_OD.c file
+            </summary>
+            <returns>string</returns>
+        </member>
+        <member name="M:libEDSsharp.CanOpenNodeExporter.Export_one_record_type(libEDSsharp.ODentry,System.String)">
+            <summary>
+            Exports a sub object line in a record object
+            </summary>
+            <param name="sub">sub ODentry object to export</param>
+            <param name="arrayaccess">string forming current array level or empty string for none</param>
+            <returns>string forming one line of CO_OD.c record objects</returns>
+        </member>
         <member name="T:libEDSsharp.CanOpenNodeExporter_V4">
             <summary>
             Exporter for CanOpenNode_V4
@@ -138,27 +159,6 @@
             <param name="deviceCommissioning">If true, device commisioning, denotations and actual values will be included</param>
             <param name="stripped">If true, then all CANopenNode specific parameters and all disabled objects will be stripped</param>
         </member>
-        <member name="M:libEDSsharp.CanOpenNodeExporter.getflags(libEDSsharp.ODentry)">
-            <summary>
-            Get the CANopenNode specific flags, these flags are used internally in CANopenNode to determine details about the object variable
-            </summary>
-            <param name="od">An odentry to access</param>
-            <returns>byte containing the flag value</returns>
-        </member>
-        <member name="M:libEDSsharp.CanOpenNodeExporter.export_record_types">
-            <summary>
-            Export the record type objects in the CO_OD.c file
-            </summary>
-            <returns>string</returns>
-        </member>
-        <member name="M:libEDSsharp.CanOpenNodeExporter.export_one_record_type(libEDSsharp.ODentry,System.String)">
-            <summary>
-            Exports a sub object line in a record object
-            </summary>
-            <param name="sub">sub ODentry object to export</param>
-            <param name="arrayaccess">string forming current array level or empty string for none</param>
-            <returns>string forming one line of CO_OD.c record objects</returns>
-        </member>
         <member name="T:libEDSsharp.CustomProperties">
             <summary>
             Custom properties for OD entry or sub-entry, which are saved into xdd file v1.1
@@ -230,6 +230,12 @@
             </summary>
             <returns>string summary of object</returns>
         </member>
+        <member name="M:libEDSsharp.ODentry.ObjectTypeString">
+            <summary>
+            Provide a simple string representation of the object type. Returns the string of the ENUM ObjectType.VAR if objecttype is not enumed  
+            </summary>
+            <returns>string representation of object type </returns>
+        </member>
         <member name="M:libEDSsharp.ODentry.AddSubEntry">
             <summary>
             Duplicate current sub entry and add it to parent
@@ -296,19 +302,19 @@
             filled in with default values from the lowest possible index
             </summary>
         </member>
-        <member name="M:libEDSsharp.PDOHelper.buildmappingsfromlists">
+        <member name="M:libEDSsharp.PDOHelper.Buildmappingsfromlists">
             <summary>
             Rebuild the communication and mapping paramaters from the
             lists the PDOhelper currently has. These live in the list pdoslots
             </summary>
         </member>
-        <member name="M:libEDSsharp.PDOHelper.addPDOslot(System.UInt16)">
+        <member name="M:libEDSsharp.PDOHelper.AddPDOslot(System.UInt16)">
             <summary>
             Add a PDO slot as set by index
             </summary>
             <param name="configindex"></param>
         </member>
-        <member name="M:libEDSsharp.PDOHelper.findPDOslotgap(System.Boolean)">
+        <member name="M:libEDSsharp.PDOHelper.FindPDOslotgap(System.Boolean)">
             <summary>
             This finds a gap in the PDO slots
             </summary>
