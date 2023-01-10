@@ -1304,9 +1304,9 @@ namespace libEDSsharp
                     break;
                 case libEDSsharp.AccessSDO.rw:
                     if (accessPDO == libEDSsharp.AccessPDO.r)
-                        accesstype = EDSsharp.AccessType.rwr;
-                    else if (accessPDO == libEDSsharp.AccessPDO.t)
                         accesstype = EDSsharp.AccessType.rww;
+                    else if (accessPDO == libEDSsharp.AccessPDO.t)
+                        accesstype = EDSsharp.AccessType.rwr;
                     else
                         accesstype = EDSsharp.AccessType.rw;
                     break;
@@ -1319,9 +1319,9 @@ namespace libEDSsharp
             if (accType == EDSsharp.AccessType.UNKNOWN && parent != null && parent.objecttype == ObjectType.ARRAY)
                 accType = parent.accesstype;
 
-            if (PDOtype == PDOMappingType.RPDO || accType == EDSsharp.AccessType.rwr)
+            if (PDOtype == PDOMappingType.RPDO || accType == EDSsharp.AccessType.rww)
                 return libEDSsharp.AccessPDO.r;
-            else if (PDOtype == PDOMappingType.TPDO || accType == EDSsharp.AccessType.rww)
+            else if (PDOtype == PDOMappingType.TPDO || accType == EDSsharp.AccessType.rwr)
                 return libEDSsharp.AccessPDO.t;
             if (PDOtype == PDOMappingType.optional || PDOtype == PDOMappingType.@default)
                 return libEDSsharp.AccessPDO.tr;
@@ -1534,7 +1534,7 @@ namespace libEDSsharp
                 DataType dt = datatype;
                 if (dt == DataType.UNKNOWN && this.parent != null)
                     dt = parent.datatype;
-                writer.WriteLine(string.Format("DataType=0x{0:X4}", (int)dt));
+                    writer.WriteLine(string.Format("DataType=0x{0:X4}", (int)dt));
                 writer.WriteLine(string.Format("AccessType={0}", accesstype.ToString()));
 
 
@@ -2546,7 +2546,7 @@ namespace libEDSsharp
                 {
                     //Fill in cob ID
                     //FIX ME i'm really sure this is not correct, what default values should be used???
-                    string cob = string.Format("0x180+$NODEID");
+                    string cob = string.Format("$NODEID + 0x180");
                     ODentry subod = new ODentry("COB-ID", index, DataType.UNSIGNED32, cob, AccessType.rw, PDOMappingType.no, ods[index]);
                     ods[index].subobjects.Add(0x05, subod);
 

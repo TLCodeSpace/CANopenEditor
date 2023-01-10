@@ -311,7 +311,7 @@ namespace libEDSsharp
                 config.objecttype = ObjectType.RECORD;
 
                 ODentry sub = new ODentry("max sub-index", (ushort)slot.ConfigurationIndex, 0);
-                sub.defaultvalue = "6";
+                sub.defaultvalue = slot.isTXPDO()? "6" : "5";// max supported sub index TPDO=6, RPDO=5 according DS301
                 sub.datatype = DataType.UNSIGNED8;
                 sub.accesstype = EDSsharp.AccessType.ro;
                 config.addsubobject(0x00,sub);
@@ -329,9 +329,9 @@ namespace libEDSsharp
 
                     sub = new ODentry("COB-ID used by TPDO", (ushort)slot.ConfigurationIndex, 1);
                     sub.datatype = DataType.UNSIGNED32;
-                    sub.defaultvalue = slot.COB.ToHexString();
                     if (slot.nodeidpresent)
-                        sub.defaultvalue += " + $NODEID";
+                        sub.defaultvalue = "$NODEID + "; // DSP306: "The $NODEID must appear at the beginning of the expression. Otherwise the line is interpreted as without a formula. 
+                    sub.defaultvalue += slot.COB.ToHexString();
                     sub.accesstype = EDSsharp.AccessType.rw;
                     config.addsubobject(0x01, sub);
 
@@ -373,9 +373,9 @@ namespace libEDSsharp
 
                     sub = new ODentry("COB-ID used by RPDO", (ushort)slot.ConfigurationIndex, 1);
                     sub.datatype = DataType.UNSIGNED32;
-                    sub.defaultvalue = slot.COB.ToHexString();
                     if (slot.nodeidpresent)
-                        sub.defaultvalue += " + $NODEID";
+                        sub.defaultvalue = "$NODEID + "; // DSP306: "The $NODEID must appear at the beginning of the expression. Otherwise the line is interpreted as without a formula. 
+                    sub.defaultvalue += slot.COB.ToHexString();
                     sub.accesstype = EDSsharp.AccessType.rw;
                     config.addsubobject(0x01, sub);
 
@@ -384,6 +384,12 @@ namespace libEDSsharp
                     sub.defaultvalue = slot.transmissiontype.ToString();
                     sub.accesstype = EDSsharp.AccessType.rw;
                     config.addsubobject(0x02, sub);
+
+                    sub = new ODentry("event timer", (ushort)slot.ConfigurationIndex, 5);
+                    sub.datatype = DataType.UNSIGNED16;
+                    sub.defaultvalue = slot.eventtimer.ToString();
+                    sub.accesstype = EDSsharp.AccessType.rw;
+                    config.addsubobject(0x05, sub);
                 }
 
                 eds.ods.Add(slot.ConfigurationIndex,config);
