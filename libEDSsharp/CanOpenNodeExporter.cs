@@ -27,6 +27,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.IO;
 
+
+
 namespace libEDSsharp
 {
 
@@ -50,6 +52,7 @@ namespace libEDSsharp
         private byte maxTXmappingsize = 0;
         ODentry maxRXmappingsOD=null;
         ODentry maxTXmappingsOD=null;
+
 
         public void prepareCanOpenNames()
         {
@@ -391,7 +394,7 @@ namespace libEDSsharp
                             specialarraylength = string.Format("[{0}]", maxlength);
                         }
 
-                        sb.AppendLine($"/*{od.Index:X4}      */ {objecttypewords,-15} {make_cname(od.parameter_name,od)}[{od.Nosubindexes - 1}]{specialarraylength};");
+                        sb.AppendLine($"/*{od.Index:X4}      */ {objecttypewords,-15} {make_cname(od.parameter_name,od)}{specialarraylength}[{od.Nosubindexes - 1}];");
                     }
                 }
             }
@@ -757,6 +760,7 @@ file.WriteLine(@"/**************************************************************
                     default:
                         {
                             file.WriteLine(string.Format("/*{0:X4}, Data Type: {1} */", od.Index, t.ToString()));
+                            file.WriteLine(string.Format("        #define {0,-51} 0x{1:X4}", string.Format("OD_{0}_idx", make_cname(od.parameter_name, od)), od.Index, t.ToString()));
                             file.WriteLine(string.Format("        #define {0,-51} {1}.{2}", string.Format("OD_{0}", make_cname(od.parameter_name,od)), loc, make_cname(od.parameter_name,od)));
 
                             DataType dt = od.datatype;
@@ -774,6 +778,7 @@ file.WriteLine(@"/**************************************************************
                             DataType dt = od.datatype;
 
                             file.WriteLine(string.Format("/*{0:X4}, Data Type: {1}, Array[{2}] */", od.Index, t.ToString(), od.Nosubindexes - 1));
+                            file.WriteLine(string.Format("        #define {0,-51} 0x{1:X4}", string.Format("OD_{0}_idx", make_cname(od.parameter_name, od)), od.Index, t.ToString()));
                             file.WriteLine(string.Format("        #define OD_{0,-48} {1}.{2}", make_cname(od.parameter_name,od), loc, make_cname(od.parameter_name,od)));
                             file.WriteLine(string.Format("        #define {0,-51} {1}", string.Format("ODL_{0}_arrayLength", make_cname(od.parameter_name,od)), od.Nosubindexes - 1));
 
@@ -822,6 +827,7 @@ file.WriteLine(@"/**************************************************************
                             if (!constructed_rec_types.Contains(rectype))
                             {
                                 file.WriteLine(string.Format("/*{0:X4}, Data Type: {1}_t */", od.Index, rectype));
+                                file.WriteLine(string.Format("        #define {0,-51} 0x{1:X4}", string.Format("OD_{0}_idx", make_cname(od.parameter_name, od)), od.Index, t.ToString()));
                                 file.WriteLine(string.Format("        #define {0,-51} {1}.{2}", string.Format("OD_{0}", rectype), loc, rectype));
                                 constructed_rec_types.Add(rectype);
                                 file.WriteLine("");
@@ -1163,6 +1169,7 @@ const CO_OD_entry_t CO_OD[CO_OD_NoOfElements] = {
                 {
                     defaultvalue = defaultvalue.Replace("$NODEID", "");
                     defaultvalue = defaultvalue.Replace("+", "");
+                    defaultvalue = defaultvalue.Trim();
                     nodeidreplace = true;
                 }
 
@@ -1554,13 +1561,13 @@ const CO_OD_entry_t CO_OD[CO_OD_NoOfElements] = {
             //NMT CLIENT
             checkfeature = 0;
             if (ObjectActive(0x1f80))
-                checkfeature++;
+                checkfeature ++;
             if (ObjectActive(0x1029))
-                checkfeature++;
+                checkfeature ++;
             if (ObjectActive(0x1017))
-                checkfeature++;
+                checkfeature ++;
             if (ObjectActive(0x1001))
-                checkfeature++;
+                checkfeature ++;
             if (checkfeature == 4)
             {
                 //NMT Client is not optional
