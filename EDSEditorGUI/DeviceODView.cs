@@ -25,13 +25,13 @@ using System.Windows.Forms;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using libEDSsharp;
-
 namespace ODEditor
 {
 
     public partial class DeviceODView : MyTabUserControl
     {
         EDSsharp eds = null;
+        public List<EDSsharp> network;
 
         ODentry selectedObject;
         ODentry lastSelectedObject;
@@ -39,6 +39,8 @@ namespace ODEditor
         bool justUpdating = false;
         bool ExporterOld = false;
         bool ExporterV4 = false;
+       
+        public event EventHandler<UpdateODViewEventArgs> UpdateODViewForEDS;
        
         public DeviceODView()
         {
@@ -133,9 +135,11 @@ namespace ODEditor
 
             if (button_saveChanges.BackColor == Color.Red)
             {
+
                 var answer = checkBox_autosave.Checked 
                            ? DialogResult.No 
                            : MessageBox.Show(String.Format("Unsaved changes on Index 0x{0:X4}/{1:X2}.\nDo you wish to switch object and loose your changes?\n\nYes = Lose changes\nNo = Save\nCancel = Go back and stay on the object", lastSelectedObject.Index, lastSelectedObject.Subindex), "Unsaved changes", MessageBoxButtons.YesNoCancel); ;
+
 
                 switch (answer)
                 {
@@ -153,7 +157,7 @@ namespace ODEditor
                         {
                             ObjectSave();
                             result = false;
-                        }
+                }
                         break;
                 }
 
@@ -633,7 +637,6 @@ namespace ODEditor
                         contextMenu_subObject_removeSubItemToolStripMenuItem.Enabled = od.Subindex > 0 && od.parent != null;
                         contextMenu_subObject_removeSubItemLeaveGapToolStripMenuItem.Enabled = parent.objecttype == ObjectType.RECORD && od.Subindex > 0 && od.parent != null;
 
-                        
                         if (isClickOnItem(e.Location))
                         {
                             contextMenu_subObject.Show(Cursor.Position);
@@ -711,15 +714,23 @@ namespace ODEditor
 
             if (srcObjects.Count > 0)
             {
-                InsertObjects insObjForm = new InsertObjects(eds, srcObjects, "1");
+                InsertObjects insObjForm = new InsertObjects(eds, network, srcObjects, "1");
 
                 if (insObjForm.ShowDialog() == DialogResult.OK)
                 {
                     selectedObject = null;
-                    eds.Dirty = true;
+                    EDSsharp modifiedEds = insObjForm.GetModifiedEDS();
+                    modifiedEds.Dirty = true;
+                    if(modifiedEds == this.eds)
+                    {
                     PopulateObjectLists(eds);
                     PopulateSubList();
                     PopulateObject();
+                    }
+                    else
+                    {
+                        UpdateODViewForEDS?.Invoke(this, new UpdateODViewEventArgs(modifiedEds));
+                    }
                 }
             }
         }

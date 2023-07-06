@@ -394,7 +394,7 @@ namespace libEDSsharp
                             specialarraylength = string.Format("[{0}]", maxlength);
                         }
 
-                        sb.AppendLine($"/*{od.Index:X4}      */ {objecttypewords,-15} {make_cname(od.parameter_name,od)}{specialarraylength}[{od.Nosubindexes - 1}];");
+                        sb.AppendLine($"/*{od.Index:X4}      */ {objecttypewords,-15} {make_cname(od.parameter_name,od)}[{od.Nosubindexes - 1}]{specialarraylength};");
                     }
                 }
             }
@@ -1165,9 +1165,9 @@ const CO_OD_entry_t CO_OD[CO_OD_NoOfElements] = {
                     defaultvalue = "0";
                 }
 
-                if (defaultvalue.Contains("$NODEID"))
+                if (defaultvalue.Contains("$NODEID", StringComparison.OrdinalIgnoreCase)) // fetch different case of "NODeID" (allowed according DS301)
                 {
-                    defaultvalue = defaultvalue.Replace("$NODEID", "");
+                    defaultvalue = defaultvalue.ToUpper().Replace("$NODEID", "");
                     defaultvalue = defaultvalue.Replace("+", "");
                     defaultvalue = defaultvalue.Trim();
                     nodeidreplace = true;
@@ -1194,7 +1194,7 @@ const CO_OD_entry_t CO_OD[CO_OD_NoOfElements] = {
                 if (nodeidreplace)
                 {
                     UInt32 data = Convert.ToUInt32(defaultvalue.Trim(), nobase);
-                    data += eds.NodeId;
+                    data += eds.NodeID;
                     defaultvalue = string.Format("0x{0:X}", data);
                     nobase = 16;
                 }
