@@ -176,7 +176,8 @@ namespace libEDSsharp
         {
             if (od.Index >= indexL && od.Index <= indexH && od.prop.CO_countLabel != countLabel)
             {
-                Warnings.AddWarning($"Error in 0x{od.Index:X4}: 'Count Label' must be '{countLabel}'", Warnings.warning_class.WARNING_BUILD);
+                Warnings.AddWarning($"Error in 0x{od.Index:X4}: 'Count Label' must be '{countLabel}', automatically add it in!", Warnings.warning_class.WARNING_BUILD);
+                od.prop.CO_countLabel = countLabel;
             }
         }
 
